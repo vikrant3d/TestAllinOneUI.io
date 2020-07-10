@@ -678,13 +678,17 @@ $("#ordersection").hide();
 			  data : '{"orderid":"'+$("#Orderid").val()+'"}',
 			  success: function (response) { 
 					var str = "";
-						$("#orderHeader").html('Thanks '+ $($(response).attr('user')).attr('userName') + ' for placing order with Rasayani online Store.')
-						str = str + '<p> Your order was placed on '+$(response).attr('datetime')+'. Order status is <b>'+$(response).attr('orderStatus')+'</b>. </p>';
-						str = str + '<p> Total Amount was  '+$(response).attr('finalPrice')+' Rs, Discount was '+$(response).attr('discount')+' Rs, Delivery charges was '+$(response).attr('deliveryCharge')+' Rs, Coupan Used '+$(response).attr('coupanCode')+', </p>';
-						str = str + '<p> Delivery person will contact you on mobile no '+$($(response).attr('user')).attr('mobileNo')+', or email id '+$($(response).attr('user')).attr('emailid')+'. </p>';
-						str = str + '<p> Delivery address is '+$($(response).attr('user')).attr('address')+'. </p>';
-						str = str + '<br><p><b>Below are order details</b></p>';
-				
+					var coupanStr="";
+					if($(response).attr('coupanCode') != null){
+						 coupanStr= ', Coupon Used '+$(response).attr('coupanCode');
+					}
+					$("#orderHeader").html('Thank you '+ $($(response).attr('user')).attr('userName') + ' for placing order.')
+					str = str + '<p> Your order was placed on '+$(response).attr('datetime')+'. Order status is <b>'+$(response).attr('orderStatus')+'</b>. </p>';
+					str = str + '<p> Total Amount was  '+$(response).attr('finalPrice')+' Rs, Discount was '+$(response).attr('discount')+' Rs, Delivery charges was '+$(response).attr('deliveryCharge')+' Rs'+coupanStr+'. </p>';
+					str = str + '<p> Delivery person will contact you on mobile no '+$($(response).attr('user')).attr('mobileNo')+', or email id '+$($(response).attr('user')).attr('emailid')+'. </p>';
+					str = str + '<p> Delivery address is '+$($(response).attr('user')).attr('address')+'. </p>';
+					str = str + '<br><p><b>Below are order details</b></p>';
+			
 				 str= str +"<ol>";
 					$($($(response).attr('orderDetailsList'))).each(function(i,response){
 						str= str +"<li>"+$(response).attr('description')+"</li>";
