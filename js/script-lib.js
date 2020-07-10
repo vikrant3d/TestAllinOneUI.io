@@ -1100,8 +1100,8 @@ function saveCloseCoupanPopUp(){
 				alert("Please enter all required details for Row No "+(++k));
 				result = false;
 			}	
-			if($(val).attr('validFrom').length != 19 || $(val).attr('validTo').length != 19){
-				alert("Please enter ValidFrom and ValidTo date for Row No "+(++k));
+			if(checkValidDateFormat($(val).attr('validFrom')) || checkValidDateFormat($(val).attr('validTo'))){
+				alert("Please enter valid ValidFrom and ValidTo date, example use format '09/07/2020 07:40 PM' for Row No "+(++k));
 				result = false;
 			}			
 		}
@@ -1115,6 +1115,9 @@ function saveCloseCoupanPopUp(){
 		$("#vendorModal").attr('style',"display:block;");
 		$("#coupanModal").modal('hide');
 	}
+}
+function checkValidDateFormat(d){
+	return !(d.length==19 && d.split("/").length == 3 && d.split(":").length == 2 && d.split(" ").length == 3 && (d.indexOf("AM")!= -1 || d.indexOf("PM")!= -1));
 }
 function addNewCoupan(){
 	var count = $("#coupanRows > tr:last > td:first").html();
