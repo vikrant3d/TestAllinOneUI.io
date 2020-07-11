@@ -8000,7 +8000,7 @@ body {
   font-size: 15px;
   line-height: 1.8;
   font-weight: 400;
-  color: gray; }
+ }
   body.menu-show {
     overflow: hidden;
     position: fixed;
@@ -8658,7 +8658,7 @@ h1, h2, h3, h4, h5,
   -webkit-transition: all 0.3s ease;
   -ms-transition: all 0.3s ease;
   transition: all 0.3s ease;
-  border: 1px solid #f0f0f0; }
+  border: 1px solid #b3b3b3; }
   @media (max-width: 991.98px) {
     .product {
       margin-bottom: 30px; } }
@@ -8882,7 +8882,7 @@ h1, h2, h3, h4, h5,
 .ftco-cart button, .ftco-cart .form-control {
   height: 54px !important;
   text-align: center;
-  bordeR: 1px solid rgba(0, 0, 0, 0.05) !important;
+  bordeR: 1px solid rgb(130, 174, 71) !important ;
   color: #000000 !important;
   padding: 0;
   font-size: 14px; }
@@ -8908,7 +8908,7 @@ h1, h2, h3, h4, h5,
   .ftco-cart .form-group .select-wrap {
     position: relative; }
     .ftco-cart .form-group .select-wrap select {
-      font-size: 14px;
+      font-size: 16px;
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none; }
@@ -8967,7 +8967,7 @@ h1, h2, h3, h4, h5,
 .cart-total {
   width: 100%;
   display: block;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid black;
   padding: 20px; }
   .cart-total h3 {
     font-size: 16px;
@@ -9015,15 +9015,15 @@ h1, h2, h3, h4, h5,
     appearance: none; }
 
 .billing-form .form-control {
-  font-weight: 300;
+  font-weight: 400;
   border: transparent !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid black !important;
   height: 58px !important;
   padding-left: 15px;
   padding-right: 15px;
   background: transparent !important;
-  color: rgba(0, 0, 0, 0.4) !important;
-  font-size: 14px;
+  color: black !important;
+  font-size: 16px;
   border-radius: 0px;
   -webkit-box-shadow: none !important;
   box-shadow: none !important; }
@@ -9048,7 +9048,7 @@ h1, h2, h3, h4, h5,
 .cart-detail {
   width: 100%;
   display: block;
-  border: 1px solid rgba(0, 0, 0, 0.05); }
+  border: 1px solid black; }
   .cart-detail.cart-total {
     border: 1px solid rgba(0, 0, 0, 0.05); }
   .cart-detail .btn-primary {
