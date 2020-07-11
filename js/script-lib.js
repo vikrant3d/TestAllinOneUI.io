@@ -218,7 +218,7 @@ function generateProduct(){
 		}else{
 			outOfStock='<br><span class="btn btn-danger">Out of Stock</span>';
 		}
-		var ourProducts = '<div class="col-md-6 col-lg-3 ftco-animate fadeInUp ftco-animated productNameClass" data-id="'+valuesDetails[0]+'" ><div class="product"><a href="javascript:void(0)" class="img-prod" style="text-align: center"><img class="img-fluid" src="images/product-'+key+'.jpg" alt="No Image" style="height: 200px;width: 200px;"><span id="discountSec'+key+'" class="'+discClass+'">'+firstDiscPrice+'</span><div class="overlay"></div></a><div class="text pb-4 px-3 text-center"><h3><a href="javascript:void(0)">'+valuesDetails[0]+'</a></h3><div class=""><div class="pricing123"><p class="price"  ><span id="priceSection'+key+'">'+getAmountDesc(maxPrice,minPrice,disc,key)+'</span><span class="price-sale" >'+descDesc+'</span>'+outOfStock+'</p></div></div></div></div></div>';
+		var ourProducts = '<div class="col-md-6 col-lg-3 ftco-animate fadeInUp ftco-animated productNameClass" data-id="'+valuesDetails[0]+'" ><div class="product"><a href="javascript:void(0)" class="img-prod" style="text-align: center"><img class="img-fluid" src="images/product-'+key+'.jpg" alt="No Image" style="height: 190px;width: 190px;"><span id="discountSec'+key+'" class="'+discClass+'">'+firstDiscPrice+'</span><div class="overlay"></div></a><div class="text pb-4 px-3 text-center"><h3><a href="javascript:void(0)">'+valuesDetails[0]+'</a></h3><div class=""><div class="pricing123"><p class="price"  ><span id="priceSection'+key+'">'+getAmountDesc(maxPrice,minPrice,disc,key)+'</span><span class="price-sale" >'+descDesc+'</span>'+outOfStock+'</p></div></div></div></div></div>';
 		$("#productDetails").append(ourProducts);
 		}
 	});

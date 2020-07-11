@@ -9839,7 +9839,7 @@ textarea.form-control {
   position: relative; }
   .search-form .form-group input {
     padding-right: 50px;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 1px solid rgb(130, 174, 70);
     color: black;
     font-size: 13px; }
     .search-form .form-group input::-webkit-input-placeholder {
