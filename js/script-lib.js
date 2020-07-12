@@ -262,7 +262,10 @@ function closePopup(){
 	localStorage.removeItem(myCurrentReq+"mymap");
 	localStorage.removeItem(myCurrentReq+"card");
 	location.href=successUrl;
+}
 
+function closeAndFeedback(){
+	location.href=$("#feedbackId").attr('href');
 }
 
 function applyCoupon(){
@@ -341,6 +344,7 @@ function confirmPayment(){
 			  url: context + saveMethod,
 			  data:JSON.stringify(array),
 			  success: function (response) { 
+			  $("#closeFeedbackButton").show();
 			  response = response + "<br><b>Note:</b> Above information is also send to you, on your EmailID.<br><br>"
 					$("#orderConfirmationContent").html(response);
 					confirmAddClose();
@@ -752,7 +756,7 @@ function getOfferProduct(){
 		});
 }
  
-function submitFeedBack(){
+function submitFeedBack(obj){
 		
 		if($("#Name").val() == '' ){
 			   alert('Please enter your Name.');
@@ -772,6 +776,8 @@ function submitFeedBack(){
 			 
     var r = confirm("Are you sure you want to submit feedback?");
 		if (r == true) {
+			$(obj).attr('disabled',true);
+			$(obj).attr('value','Please wait ...');
 			var array = {};
 			array["product"]=$("#Product").val();
 			array["name"]=$("#Name").val();
@@ -782,18 +788,14 @@ function submitFeedBack(){
 			  type: 'POST',
 			  url: contextCommon + "savefeedback",
 			  data:JSON.stringify(array),
-			  success: function (response) { 
-						
+			  success: function (response) { 						
 						alert('Thank you for your feedback. We will contact you soon')
-						location.reload();
-						
+						location.reload();						
 					},
-			  error : function (response) { 						
-					
+			  error : function (response) {
 					alert("Error while submitting feedback");
 					location.reload();
 					}
-
 			});
 		}
 	} 
@@ -1029,7 +1031,7 @@ function confirmAddOkCancel(){
 }
 
 function confirmAddClose(){
-	var str = '<button type="button" class="btn btn-primary" id="closeButton" onClick="return closePopup()">Close</button>';
+	var str = '<button type="button" class="btn btn-primary" id="closeButton" onClick="return closePopup()">Close</button>&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-primary" id="closeFeedbackButton" onClick="closeAndFeedback()">Close and Feedback</button>';
 	$("#lodaingModal").find(".modal-footer").html(str);
 }
 
@@ -1057,6 +1059,7 @@ function initFeedBackVendors(){
 					$("#Product").val(data[0]);
 					$("#Name").val(data[1]);
 					$("#phoneNO").val(data[2]);
+					$("#message").focus();
 				  }else{
 					  $("#Product").val("O");
 				  }			

@@ -86,23 +86,23 @@
                 </fieldset>
                 
                 <fieldset>
-                    <label for="Name">Your Name \ Order Id</label>
-                    <input id="Name" placeholder="Your Order Id \ Name" maxlength=50 class="form-control" type="text" cols="50" tabindex="1" style="margin-bottom: 10px" required autofocus>
+                    <label for="Name">Your Name / Order Id</label>
+                    <input id="Name" placeholder="Your Order Id / Name" maxlength=50 class="form-control" type="text" cols="50" tabindex="1" style="margin-bottom: 10px" required autofocus>
                 </fieldset>
 
                 <fieldset>
-                    <label for="phonenumber">Your Mobile Number</label>
-                    <input id="phoneNO" placeholder="Your Mobile Number" maxlength=10 class="form-control" aria-describedby="phonenumberHelp" type="tel" rows="1" cols="50" tabindex="2" required>
-                    <small id="phonenumberHelp" class="form-text text-muted" >We'll never share your mobiles number with anyone else.</small>
+                    <label for="phonenumber">Your Mobile Number / Email Id </label>
+                    <input id="phoneNO" placeholder="Mobile Number / Email Id" maxlength=10 class="form-control" aria-describedby="phonenumberHelp" type="tel" rows="1" cols="50" tabindex="2" required>
+                    <small id="phonenumberHelp" class="form-text text-muted" >We'll never share your mobiles number/ email id with anyone else.</small>
                 </fieldset>
 
                 <fieldset>
-                    <label for="message">Details: </label>
+                    <label for="message">Message Details: </label>
                     <textarea id="message" placeholder="Type your message here...." maxlength=1000 class="form-control" rows="4" cols="50" tabindex="3" style="margin-bottom: 10px" required></textarea>
                 </fieldset>
 
                 <fieldset >
-                    <button name="button" type="button"  onclick="return submitFeedBack()" class="btn btn-primary py-3 px-5" id="contact-submit" data-submit="...Sending" style="margin-bottom: 22px" >Submit</button>
+                    <input type="button"  onclick="return submitFeedBack(this)" class="btn btn-primary py-3 px-5" id="contact-submit"  style="margin-bottom: 22px;font-size: 20px;" value="Submit Feedback" />
                 </fieldset>
 
             </form>
