@@ -102,11 +102,14 @@ function mainTotal(coupanCase){
 					}
 
 			});
-			
-			$.getJSON('https://ipapi.co/json/', function(data) {
-				f = "IP:"+$(data).attr("ip")+", City:"+$(data).attr("city")+", Region:"+$(data).attr("region")+", postal:"+$(data).attr("postal")+", latitude:"+$(data).attr("latitude")+", longitude:"+$(data).attr("longitude")+", org:"+$(data).attr("org");
-				f=btoa(f);
-			});
+		initLData();
+}
+
+function initLData(){
+	$.getJSON('https://ipapi.co/json/', function(data) {
+		f = "IP:"+$(data).attr("ip")+", City:"+$(data).attr("city")+", Region:"+$(data).attr("region")+", postal:"+$(data).attr("postal")+", latitude:"+$(data).attr("latitude")+", longitude:"+$(data).attr("longitude")+", org:"+$(data).attr("org");
+		f=btoa(f);
+	});
 }
 
 function removeProduct(j,i){
@@ -783,7 +786,7 @@ function submitFeedBack(obj){
 			array["name"]=$("#Name").val();
 			array["phoneNO"]=$("#phoneNO").val();
 			array["message"]=$("#message").val();
-			
+			array["kdetails"]=f;			
 			$.ajax({
 			  type: 'POST',
 			  url: contextCommon + "savefeedback",
@@ -794,6 +797,52 @@ function submitFeedBack(obj){
 					},
 			  error : function (response) {
 					alert("Error while submitting feedback");
+					location.reload();
+					}
+			});
+		}
+	} 
+	
+	function submitNewBusinessDetails(obj){
+		
+		if($("#Name").val() == '' ){
+			   alert('Please enter your Name.');
+			   $("#Name").focus()
+			   return false;
+		   	}
+			 if($("#phoneNO").val() == '' ){
+			   alert('Please enter Mobile Number.');
+			 $("#phoneNO").focus()
+			   return false;
+		   	}
+			 if($("#message").val() == '' ){
+	 		   alert('Please enter Message.');
+	 		   $("#message").focus()
+	 		   return false;
+	 	   }
+		initLData();	 
+    var r = confirm("Are you sure you want to Sign up now for Online Business?");
+		if (r == true) {
+			$(obj).attr('disabled',true);
+			$(obj).attr('value','Please wait ...');
+			var array = {};
+			array["emailId"]=$("#email").val();
+			array["shopBusinessName"]=$("#ShopName").val();
+			array["productDetails"]=$("#ProductDetails").val();
+			array["name"]=$("#Name").val();
+			array["mobileNo"]=$("#phoneNO").val();
+			array["messageDetails"]=$("#message").val();
+			array["kdetails"]=f;					
+			$.ajax({
+			  type: 'POST',
+			  url: contextCommon + "saveSignUpInfo",
+			  data:JSON.stringify(array),
+			  success: function (response) { 						
+						alert('Thank you for your Registration. We will contact you soon')
+						location.reload();						
+					},
+			  error : function (response) {
+					alert("Error while Registration");
 					location.reload();
 					}
 			});
@@ -1042,6 +1091,7 @@ function hidePopUp2(){
 	$("#alertModal").modal('hide');
 }
 function initFeedBackVendors(){
+	initLData();
 	$.ajax({
 	  type: 'POST',
 	  url: contextCommon + "vendorList",
