@@ -792,11 +792,11 @@ function submitFeedBack(obj){
 			  data:JSON.stringify(array),
 			  success: function (response) { 						
 						alert('Thank you for your feedback. We will contact you soon')
-						location.reload();						
+						location.href="ContactForm.html";						
 					},
 			  error : function (response) {
-					alert("Error while submitting feedback");
-					location.reload();
+						alert("Error while submitting feedback");
+						location.href="ContactForm.html";
 					}
 			});
 		}
