@@ -1,6 +1,5 @@
 var myCurrentReq = document.getElementById("myscriptLib").getAttribute("myCustomAttrib");
 var map = {};
-var dm = "https://eqqkv4vbgf.execute-api.ap-south-1.amazonaws.com/";
 var context = dm + "dev/"+myCurrentReq+"/";
 var contextCommon = dm + "dev/common/";
 var category=myCurrentReq.charAt(0).toUpperCase()
@@ -86,18 +85,14 @@ function mainTotal(coupanCase){
 					finalCPrice = $(response)[3];
 					minOrder = $(response)[4];
 					if(coupanCase == "Y"){
+						$("#alertMsg").html($(response)[8]);
+						$("#alertModal").modal('show');
 						if($(response)[6] == "Y"){
-							isCoupancase="Y";
-							$("#alertMsg").html("Coupon Code Added Successfully.");
-							$("#alertModal").modal('show');
+							isCoupancase="Y";							
+						}else{
+							isCoupancase="N";							
 						}
-						else{
-							isCoupancase="N";
-							$("#alertMsg").html("Sorry No Coupon found.");
-							$("#alertModal").modal('show');
-						}
-					}
-						
+					}						
 					},
 			  error : function (response) { 						
 					$('#lodaingModal').modal('hide');
@@ -106,11 +101,14 @@ function mainTotal(coupanCase){
 					}
 
 			});
-			
-			$.getJSON('https://ipapi.co/json/', function(data) {
-				f = "IP:"+$(data).attr("ip")+", City:"+$(data).attr("city")+", Region:"+$(data).attr("region")+", postal:"+$(data).attr("postal")+", latitude:"+$(data).attr("latitude")+", longitude:"+$(data).attr("longitude")+", org:"+$(data).attr("org");
-				f=btoa(f);
-			});
+		initLData();
+}
+
+function initLData(){
+	$.getJSON('https://ipapi.co/json/', function(data) {
+		f = "IP:"+$(data).attr("ip")+", City:"+$(data).attr("city")+", Region:"+$(data).attr("region")+", postal:"+$(data).attr("postal")+", latitude:"+$(data).attr("latitude")+", longitude:"+$(data).attr("longitude")+", org:"+$(data).attr("org");
+		f=btoa(f);
+	});
 }
 
 function removeProduct(j,i){
@@ -154,7 +152,7 @@ function displayCardDetails(){
 			var finalPrice = $(obj).attr('minPrice') * k;
 			var clickFn = "return removeProduct('"+p+"',"+i+")";
 			var name = map[j].substr(0,map[j].indexOf(","));
-			var str = '<div class="col-md-6 col-lg-3 ftco-animate fadeInUp ftco-animated" id="sectiondetails'+i+'"><div class="product"><a href="javascript:void(0)" style="text-align: center" class="img-prod"><img class="img-fluid" src="images/product-'+j+'.jpg" alt="Colorlib Template"><div class="overlay"></div></a><div class="text py-3 pb-4 px-3 text-center"><h3><a href="javascript:void(0)">'+name+'</a></h3><h5>'+$(obj).attr('productDesc')+'</h5><div class="pricing123"><p class="price"><span class="price-sale" style="'+style+'" >Price - '+$(obj).attr('minPrice')+' Rs</span><br><span style="'+style+'" class="price-sale">&nbsp;&nbsp;Quantity - '+k+'</span><br><span class="price-sale" style="'+style+'">&nbsp;&nbsp;Final Price - '+finalPrice+' Rs</span><br><span class="price-sale">&nbsp;&nbsp;<input type="button" value="Remove from cart" onclick="'+clickFn +'" class="btn btn-primary"  ></span><span class="total" style="display:none" data-val="'+j+','+k+'" id="totVal'+i+'">'+finalPrice+' Rs</span></p></div></div></div></div>';
+			var str = '<div class="col-md-6 col-lg-3 ftco-animate fadeInUp ftco-animated" id="sectiondetails'+i+'"><div class="product"><a href="javascript:void(0)" style="text-align: center" class="img-prod"><img class="img-fluid" src="images/product-'+j+'.jpg" alt="Colorlib Template"><div class="overlay"></div></a><div class="text pb-4 px-3 text-center"><h3><a href="javascript:void(0)">'+name+'</a></h3><h5>'+$(obj).attr('productDesc')+'</h5><div class="pricing123"><p class="price"><span class="price-sale" style="'+style+'" >Price - '+$(obj).attr('minPrice')+' Rs</span><br><span style="'+style+'" class="price-sale">&nbsp;&nbsp;Quantity - '+k+'</span><br><span class="price-sale" style="'+style+'">&nbsp;&nbsp;Final Price - '+finalPrice+' Rs</span><br><span class="price-sale">&nbsp;&nbsp;<input type="button" value="Remove from cart" onclick="'+clickFn +'" class="btn btn-primary"  ></span><span class="total" style="display:none" data-val="'+j+','+k+'" id="totVal'+i+'">'+finalPrice+' Rs</span></p></div></div></div></div>';
 			$("#cardDetailsData").append(str);
 			}
 		}
@@ -222,7 +220,7 @@ function generateProduct(){
 		}else{
 			outOfStock='<br><span class="btn btn-danger">Out of Stock</span>';
 		}
-		var ourProducts = '<div class="col-md-6 col-lg-3 ftco-animate fadeInUp ftco-animated productNameClass" data-id="'+valuesDetails[0]+'" ><div class="product"><a href="javascript:void(0)" class="img-prod" style="text-align: center"><img class="img-fluid" src="images/product-'+key+'.jpg" alt="No Image" style="height: 200px;width: 200px;"><span id="discountSec'+key+'" class="'+discClass+'">'+firstDiscPrice+'</span><div class="overlay"></div></a><div class="text py-3 pb-4 px-3 text-center"><h3><a href="javascript:void(0)">'+valuesDetails[0]+'</a></h3><div class=""><div class="pricing123"><p class="price"  ><span id="priceSection'+key+'">'+getAmountDesc(maxPrice,minPrice,disc,key)+'</span><span class="price-sale" >'+descDesc+'</span>'+outOfStock+'</p></div></div></div></div></div>';
+		var ourProducts = '<div class="col-md-6 col-lg-3 ftco-animate fadeInUp ftco-animated productNameClass" data-id="'+valuesDetails[0]+'" ><div class="product"><a href="javascript:void(0)" class="img-prod" style="text-align: center"><img class="img-fluid" src="images/product-'+key+'.jpg" alt="No Image" style="height: 190px;width: 190px;"><span id="discountSec'+key+'" class="'+discClass+'">'+firstDiscPrice+'</span><div class="overlay"></div></a><div class="text pb-4 px-3 text-center"><h3><a href="javascript:void(0)">'+valuesDetails[0]+'</a></h3><div class=""><div class="pricing123"><p class="price"  ><span id="priceSection'+key+'">'+getAmountDesc(maxPrice,minPrice,disc,key)+'</span><span class="price-sale" >'+descDesc+'</span>'+outOfStock+'</p></div></div></div></div></div>';
 		$("#productDetails").append(ourProducts);
 		}
 	});
@@ -266,7 +264,10 @@ function closePopup(){
 	localStorage.removeItem(myCurrentReq+"mymap");
 	localStorage.removeItem(myCurrentReq+"card");
 	location.href=successUrl;
+}
 
+function closeAndFeedback(){
+	location.href=$("#feedbackId").attr('href');
 }
 
 function applyCoupon(){
@@ -345,6 +346,7 @@ function confirmPayment(){
 			  url: context + saveMethod,
 			  data:JSON.stringify(array),
 			  success: function (response) { 
+			  $("#closeFeedbackButton").show();
 			  response = response + "<br><b>Note:</b> Above information is also send to you, on your EmailID.<br><br>"
 					$("#orderConfirmationContent").html(response);
 					confirmAddClose();
@@ -451,6 +453,7 @@ function closeVendorDetails(){
 }
 
 function displayProfilePopUp(response){
+	$("#coupanRows").html('');
 	$('#vendorModal').modal('show');
 	$("#vendorName").val($(response).attr('vendorName'));
 	$("#mobileNo").val($(response).attr('mobileNo'));
@@ -459,19 +462,39 @@ function displayProfilePopUp(response){
 	$("#discFormula").val($(response).attr('discFormula'));
 	$("#discountDesc").val($(response).attr('discountDesc'));
 	$("#orderDeliverTime").val($(response).attr('orderDeliverTime'));
-	$("#vendorpassword").val($(response).attr('password'));
+	$("#vendorpassword").val($(response).attr('vendorPassword'));
 	$("#envMode").val($(response).attr('envMode'));
 	$("#idval").val($(response).attr('id'));
+	$("#category").val($(response).attr('category'));
 	$("#offerNote").val($(response).attr('offerNote'));
-	var coupan = "";
-	$.each($(response).attr('coupon'), function(key, value){
-		coupan = coupan + key + "#" + value+",";
+	
+	
+	$.each($(response).attr('coupansList'), function(key, coupan){
+		var rowNo = addNewCoupan();
+		$("#coupanRowDetails"+rowNo).find('td').eq(1).find('select[name="type"]').val($(coupan).attr('type'));
+		$("#coupanRowDetails"+rowNo).find('td').eq(2).find('input[name="id"]').val($(coupan).attr('id'));
+		$("#coupanRowDetails"+rowNo).find('td').eq(2).find('input[name="code"]').val($(coupan).attr('code'));
+		$("#coupanRowDetails"+rowNo).find('td').eq(3).find('input[name="discount"]').val($(coupan).attr('discount'));
+		$("#coupanRowDetails"+rowNo).find('td').eq(4).find('select[name="status"]').val($(coupan).attr('status'));
+		$("#coupanRowDetails"+rowNo).find('td').eq(5).find('input[name="validFrom"]').val($(coupan).attr('validFrom'));
+		$("#coupanRowDetails"+rowNo).find('td').eq(6).find('input[name="validTo"]').val($(coupan).attr('validTo'));
+		$("#coupanRowDetails"+rowNo).find('td').eq(7).find('input[name="amountGreater"]').val($(coupan).attr('amountGreater'));
+		$("#coupanRowDetails"+rowNo).find('td').eq(8).find('input[name="description"]').val($(coupan).attr('description'));
+		coupanTypeChange($("#coupanType_"+rowNo),rowNo);
 	});
-	coupan = coupan.substr(0,coupan.length-1);
-	$("#coupon").val(coupan);
 }
 
-function updateVendorDetails(){
+function updateVendorDetails(){	
+	var ar = new Array();
+	$("#coupanForm tbody tr").each(function() {
+      rowData = $(this).find('input, select').serializeArray();
+      var rowAr = {};
+      $.each(rowData, function(e, v) {
+        rowAr[v['name']] = v['value'];
+      });
+      ar.push(rowAr);
+    });
+   
 	var map={};
 	map["vendorName"]=$("#vendorName").val();
 	map["mobileNo"]=$("#mobileNo").val();
@@ -482,8 +505,9 @@ function updateVendorDetails(){
 	map["orderDeliverTime"]=$("#orderDeliverTime").val();
 	map["vendorPassword"]=$("#vendorpassword").val();
 	map["envMode"]=$("#envMode").val();
-	map["coupon"]=$("#coupon").val();
+	map["coupansList"]=ar;
 	map["id"]=$("#idval").val();
+	map["category"]=$("#category").val();
 	map["offerNote"]=$("#offerNote").val();
 	map["password"]=$("#password").val();
 	
@@ -660,13 +684,17 @@ $("#ordersection").hide();
 			  data : '{"orderid":"'+$("#Orderid").val()+'"}',
 			  success: function (response) { 
 					var str = "";
-						$("#orderHeader").html('Thanks '+ $($(response).attr('user')).attr('userName') + ' for placing order with Rasayani online Store.')
-						str = str + '<p> Your order was placed on '+$(response).attr('datetime')+'. Order status is <b>'+$(response).attr('orderStatus')+'</b>. </p>';
-						str = str + '<p> Total Amount was  '+$(response).attr('finalPrice')+' Rs, Discount was '+$(response).attr('discount')+' Rs, Delivery charges was '+$(response).attr('deliveryCharge')+' Rs, Coupan Used '+$(response).attr('coupanCode')+', </p>';
-						str = str + '<p> Delivery person will contact you on mobile no '+$($(response).attr('user')).attr('mobileNo')+', or email id '+$($(response).attr('user')).attr('emailid')+'. </p>';
-						str = str + '<p> Delivery address is '+$($(response).attr('user')).attr('address')+'. </p>';
-						str = str + '<br><p><b>Below are order details</b></p>';
-				
+					var coupanStr="";
+					if($(response).attr('coupanCode') != null){
+						 coupanStr= ', Coupon Used '+$(response).attr('coupanCode');
+					}
+					$("#orderHeader").html('Thank you '+ $($(response).attr('user')).attr('userName') + ' for placing order.')
+					str = str + '<p> Your order was placed on '+$(response).attr('datetime')+'. Order status is <b>'+$(response).attr('orderStatus')+'</b>. </p>';
+					str = str + '<p> Total Amount was  '+$(response).attr('finalPrice')+' Rs, Discount was '+$(response).attr('discount')+' Rs, Delivery charges was '+$(response).attr('deliveryCharge')+' Rs'+coupanStr+'. </p>';
+					str = str + '<p> Delivery person will contact you on mobile no '+$($(response).attr('user')).attr('mobileNo')+', or email id '+$($(response).attr('user')).attr('emailid')+'. </p>';
+					str = str + '<p> Delivery address is '+$($(response).attr('user')).attr('address')+'. </p>';
+					str = str + '<br><p><b>Below are order details</b></p>';
+			
 				 str= str +"<ol>";
 					$($($(response).attr('orderDetailsList'))).each(function(i,response){
 						str= str +"<li>"+$(response).attr('description')+"</li>";
@@ -730,7 +758,7 @@ function getOfferProduct(){
 		});
 }
  
-function submitFeedBack(){
+function submitFeedBack(obj){
 		
 		if($("#Name").val() == '' ){
 			   alert('Please enter your Name.');
@@ -750,28 +778,72 @@ function submitFeedBack(){
 			 
     var r = confirm("Are you sure you want to submit feedback?");
 		if (r == true) {
+			$(obj).attr('disabled',true);
+			$(obj).attr('value','Please wait ...');
 			var array = {};
 			array["product"]=$("#Product").val();
 			array["name"]=$("#Name").val();
 			array["phoneNO"]=$("#phoneNO").val();
 			array["message"]=$("#message").val();
-			
+			array["kdetails"]=f;			
 			$.ajax({
 			  type: 'POST',
 			  url: contextCommon + "savefeedback",
 			  data:JSON.stringify(array),
-			  success: function (response) { 
-						
+			  success: function (response) { 						
 						alert('Thank you for your feedback. We will contact you soon')
-						location.reload();
-						
+						location.reload();						
 					},
-			  error : function (response) { 						
-					
+			  error : function (response) {
 					alert("Error while submitting feedback");
 					location.reload();
 					}
-
+			});
+		}
+	} 
+	
+	function submitNewBusinessDetails(obj){
+		
+		if($("#Name").val() == '' ){
+			   alert('Please enter your Name.');
+			   $("#Name").focus()
+			   return false;
+		   	}
+			 if($("#phoneNO").val() == '' ){
+			   alert('Please enter Mobile Number.');
+			 $("#phoneNO").focus()
+			   return false;
+		   	}
+			 if($("#message").val() == '' ){
+	 		   alert('Please enter Message.');
+	 		   $("#message").focus()
+	 		   return false;
+	 	   }
+		initLData();	 
+    var r = confirm("Are you sure you want to Sign up now for Online Business?");
+		if (r == true) {
+			$(obj).attr('disabled',true);
+			$(obj).attr('value','Please wait ...');
+			var array = {};
+			array["emailId"]=$("#email").val();
+			array["shopBusinessName"]=$("#ShopName").val();
+			array["productDetails"]=$("#ProductDetails").val();
+			array["name"]=$("#Name").val();
+			array["mobileNo"]=$("#phoneNO").val();
+			array["messageDetails"]=$("#message").val();
+			array["kdetails"]=f;					
+			$.ajax({
+			  type: 'POST',
+			  url: contextCommon + "saveSignUpInfo",
+			  data:JSON.stringify(array),
+			  success: function (response) { 						
+						alert('Thank you for your Registration. We will contact you soon')
+						location.reload();						
+					},
+			  error : function (response) {
+					alert("Error while Registration");
+					location.reload();
+					}
 			});
 		}
 	} 
@@ -988,10 +1060,7 @@ function sendNotificationToSpecificCust(){
 					alert(response.responseJSON);
 					
 					}
-
 			});
-			
-			
 		}
 }	
 
@@ -1010,7 +1079,7 @@ function confirmAddOkCancel(){
 }
 
 function confirmAddClose(){
-	var str = '<button type="button" class="btn btn-primary" id="closeButton" onClick="return closePopup()">Close</button>';
+	var str = '<button type="button" class="btn btn-primary" id="closeButton" onClick="return closePopup()">Close</button>&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-primary" id="closeFeedbackButton" onClick="closeAndFeedback()">Close and Feedback</button>';
 	$("#lodaingModal").find(".modal-footer").html(str);
 }
 
@@ -1019,4 +1088,128 @@ function hideConfirmPopUp(){
 }
 function hidePopUp2(){
 	$("#alertModal").modal('hide');
+}
+function initFeedBackVendors(){
+	initLData();
+	$.ajax({
+	  type: 'POST',
+	  url: contextCommon + "vendorList",
+	  data : JSON.stringify(map),
+	  success: function (response) { 
+				var str="";
+				$.each(response, function(key, value) { 
+					str = str + "<option value="+key+">"+value+"</option>";
+				});
+				str = str + "<option value='O'>Others</option>";
+				$("#Product").append(str);
+				var dataStr = window.location.search;
+				if(dataStr != ''){
+					var data = atob(dataStr.substr(1)).split("#");
+					$("#Product").val(data[0]);
+					$("#Name").val(data[1]);
+					$("#phoneNO").val(data[2]);
+					$("#message").focus();
+				  }else{
+					  $("#Product").val("O");
+				  }			
+			},
+	  error : function (response) { 						
+			alert("Error Occur please contact Admin");
+			}
+	});
+}
+function openCoupanPopUp(){
+	$("#vendorModal").attr('style',"display:none;");
+	$("#coupanModal").modal('show');
+}
+function saveCloseCoupanPopUp(){
+	var ar = new Array();
+	$("#coupanForm tbody tr").each(function() {
+      rowData = $(this).find('input, select').serializeArray();
+      var rowAr = {};
+      $.each(rowData, function(e, v) {
+        rowAr[v['name']] = v['value'];
+      });
+      ar.push(rowAr);
+    });	
+	var result = true;
+	var coupanCodeArr = new Array();
+	$.each(ar, function(k, val) { 
+		if($(val).attr('type') == "DR" || $(val).attr('type') == "DP" || $(val).attr('type') == "OR" || $(val).attr('type') == "OP"){
+			if($(val).attr('code') == "" || $(val).attr('discount') == "" || $(val).attr('description') == "" || $(val).attr('amountGreater') == ""){
+				alert("Please enter all required details for Row No "+(++k));
+				result = false;
+			}			
+		}		
+		if($(val).attr('type') == "ND"){
+			if($(val).attr('code') == "" || $(val).attr('description') == "" || $(val).attr('amountGreater') == ""){
+				alert("Please enter all required details for Row No "+(++k));
+				result = false;
+			}			
+		}
+		if($(val).attr('type') == "VR" || $(val).attr('type') == "VP"){
+			if($(val).attr('code') == "" || $(val).attr('discount') == "" || $(val).attr('description') == "" || $(val).attr('validFrom') == "" || $(val).attr('validTo') == "" || $(val).attr('amountGreater') == ""){
+				alert("Please enter all required details for Row No "+(++k));
+				result = false;
+			}	
+			if(checkValidDateFormat($(val).attr('validFrom')) || checkValidDateFormat($(val).attr('validTo'))){
+				alert("Please enter valid ValidFrom and ValidTo date, example use format '09/07/2020 07:40 PM' for Row No "+(++k));
+				result = false;
+			}			
+		}
+			coupanCodeArr.push($(val).attr('code').toLowerCase());
+	});	
+	if(checkIfDuplicateExists(coupanCodeArr)){
+		alert('Duplicate Coupan Code exists. Coupan code must be unique.');
+		result = false;
+	}
+	if(result){
+		$("#vendorModal").attr('style',"display:block;");
+		$("#coupanModal").modal('hide');
+	}
+}
+function checkValidDateFormat(d){
+	return !(d.length==19 && d.split("/").length == 3 && d.split(":").length == 2 && d.split(" ").length == 3 && (d.indexOf("AM")!= -1 || d.indexOf("PM")!= -1));
+}
+function addNewCoupan(){
+	var count = $("#coupanRows > tr:last > td:first").html();
+	if(count == undefined){
+		count = 1;
+	}else{
+		count++;
+	}	
+	var str = '<tr id="coupanRowDetails'+count+'"><td>'+count+'</td><td>'+coupanTypes(count)+'</td><td><input type="hidden" name="id" value="'+count+'" /><input type="text" name="code" size="10"/></td><td><input name="discount" type="number" min="0" max="50" class="component'+count+'"/></td><td>'+coupanStatus(count)+'</td><td><input type="text" name="validFrom" size="14" placeholder="dd/MM/YYYY hh:mm AM/PM" class="component'+count+'"/></td><td><input type="text" placeholder="dd/MM/YYYY hh:mm AM/PM" size="14" name="validTo" class="component'+count+'" /></td><td><input type="text" size="2" maxlength="4" name="amountGreater" /></td><td><input type="text" size="14" name="description" /></td><td><input type="button" value="Remove" onClick="return removeCoupanRow('+count+')" /></td></tr>';
+	$("#coupanRows").append(str);
+	coupanTypeChange($("#coupanType_"+count),count);
+	return count;
+}
+function coupanTypes(count){
+	return '<select id="coupanType_'+count+'" name="type" onchange="return coupanTypeChange(this,'+count+')" ><option value="DR">Discount Rs</option><option value="DP">Discount %</option><option value="ND">No Delivery Charge</option><option value="OR">One Time Rs</option><option value="OP">One Time %</option><option value="VR">Validity Rs</option><option value="VP">Validity %</option></select>';
+}
+function coupanStatus(count){
+	return '<select id="" name="status" class="component'+count+'"><option value="E">Enable</option><option value="D">Disable</option></select>';
+}
+function removeCoupanRow(count){
+	$("#coupanRowDetails"+count).remove();
+}
+function checkIfDuplicateExists(w){
+    return new Set(w).size !== w.length 
+}
+function coupanTypeChange(obj,count){
+	$(".component"+count).hide();
+	if($(obj).val() == 'OR' || $(obj).val() == 'OP'){
+		$(obj).parent().parent().find('td').eq(4).find('select').show();
+		$(obj).parent().parent().find('td').eq(3).find('.component'+count).show();
+	}	
+	if($(obj).val() == 'VR' || $(obj).val() == 'VP'){
+		$(obj).parent().parent().find('td').eq(5).find('.component'+count).show();
+		$(obj).parent().parent().find('td').eq(6).find('.component'+count).show();
+		$(obj).parent().parent().find('td').eq(3).find('.component'+count).show();		
+	}
+	if($(obj).val() == 'DP' || $(obj).val() == 'DR'){
+		$(obj).parent().parent().find('td').eq(3).find('.component'+count).show();
+	}
+	if($(obj).val() == 'ND'){
+		$(obj).parent().parent().find('td').eq(3).find('.component'+count).hide();
+	}
 }
