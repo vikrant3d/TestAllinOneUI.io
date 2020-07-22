@@ -77,6 +77,7 @@ function mainTotal(coupanCase){
 			  url: context + "calcRebInt",
 			  data: '{"coupan":"'+$("#coupontxt").val()+'","carddetails":"'+localStorage.getItem(myCurrentReq+"card").substr(5)+'"}',
 			  success: function (response) { 
+					$("#MRPfinalTotal").html($(response)[9] + " Rs");
 					$("#finalTotal").html($(response)[0] + " Rs");
 					$("#disc").html($(response)[1] + " Rs");
 					$("#deliveryCharge").html($(response)[2] + " Rs");
@@ -648,6 +649,8 @@ function viewOrderDetails(obj,count){
 
 
 function updatestatus(obj,count){
+	$(obj).attr('disabled',true);
+	$(obj).attr('value','Please wait ...');
 	var data={};
 	data["category"]=category;
 	data["password"]=$("#password").val();
