@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>UlweAllinOne</title>
+	<!-- Mobile Specific Metas -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="shortcut icon" href="img/logo.gif" type="image/x-icon">
+	<!-- Font-->
+	<link rel="stylesheet" type="text/css" href="css/nunito-font.css">
+	<!-- Main Style Css -->
+    <link rel="stylesheet" href="css/Registerstyle.css"/>
+</head>
+<body class="form-v6">
+		<img src="img/BWU.png" style="width:100%"/>
+	<div class="page-content">
+		<div class="form-v6-content">
+			<div class="form-left">
+				<img src="img/UlweAllinOne.jpg" alt="form">
+			</div>
+			<form class="form-detail" action="#" method="post">
+				<h2>Registration Form</h2>
+				<div class="form-row">
+					<input type="text" name="full-name" id="Name" class="input-text" placeholder="Your Name" required>
+				</div>
+				<div class="form-row">
+					<input type="text" name="phoneNO" id="phoneNO" maxlength=10 class="input-text" placeholder="Your Mobile Number" required>
+				</div>
+				<div class="form-row">
+					<input type="text" name="email" id="email" class="input-text" placeholder="Email Address" required pattern="[^@]+@[^@]+.[a-zA-Z]{2,6}">
+				</div>
+				<div class="form-row">
+					<input type="text" name="ShopName" id="ShopName" class="input-text" placeholder="Your Shop Name / Business Name  " required>
+				</div>
+				<div class="form-row">
+					<input type="text" name="ProductDetails" id="ProductDetails" class="input-text" placeholder="Product Details" required>
+				</div>
+				<div class="form-row">
+					<textarea name="message" id="message" class="input-text" maxlength=1000  rows="4" cols="50" style="margin-bottom: 10px;  font-weight: bold" placeholder="Type your message here...." required></textarea>
+				</div>
+				<div class="form-row-last">
+					<input type="button" name="register" class="register" onclick="return submitNewBusinessDetails(this)" value="Register">
+					<input type="button" name="register" class="register" onclick="javascript:location.href='index.html'" value="Home">
+				</div>
+			</form>
+		</div>
+	</div>	
+	<script src="js/jquery.min.js"></script>
+	<script id="myscriptLib" myCustomAttrib="common"  src="js/script-lib.js"></script>
+</body>
+</html>

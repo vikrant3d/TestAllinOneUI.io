@@ -89,7 +89,7 @@ function mainTotal(coupanCase){
 							isCoupancase="N";							
 						}
 					}						
-					},
+				},
 			  error : function (response) { 						
 					$('#lodaingModal').modal('hide');
 					$("#closeButton").show();
@@ -465,7 +465,7 @@ function displayProfilePopUp(response){
 	$("#category").val($(response).attr('category'));
 	$("#offerNote").val($(response).attr('offerNote'));
 	$("#indexColumns").val($(response).attr('indexColumns'));
-	
+	$("#folderPath").val($(response).attr('folderPath'));	
 	
 	$.each($(response).attr('coupansList'), function(key, coupan){
 		var rowNo = addNewCoupan();
@@ -509,6 +509,7 @@ function updateVendorDetails(){
 	map["offerNote"]=$("#offerNote").val();
 	map["password"]=$("#password").val();
 	map["indexColumns"]=$("#indexColumns").val();
+	map["folderPath"]=$("#folderPath").val();
 	
 	$.ajax({
 			  type: 'POST',
