@@ -171,6 +171,9 @@ function checkQtyStatus(obj){
 }
 
 function generateProduct(columnIndex){
+	if(columnIndex == null){
+		columnIndex = 4;
+	}
 	columnIndex = 12/columnIndex;
 	
 	$.map(map, function(value,key){
