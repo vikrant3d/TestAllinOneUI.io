@@ -100,7 +100,7 @@ var topHeader = '<div class="container">'+
 					    '<div class="col-md-3 pr-4 d-flex topper align-items-center text-lg-right">'+
                           '<a href="'+$(".icon-shopping_cart").parent().attr('href')+'" class="nav-link" >'+
 								'<img src="'+myPath+'img/mycart.png" style="height: 57px" />'+
-								'<span class="cardCount" style="font-size: 25px;color:black;"></span>'+
+								'<span class="cardCount" style="font-size: 29px;color:black;margin-top: 2px;position: absolute;"></span>'+
 							'</a>'+
                         '</div>'+
 				    '</div>'+
