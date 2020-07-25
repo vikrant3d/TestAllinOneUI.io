@@ -111,10 +111,10 @@ var topHeader = '<div class="container">'+
 var slideImageSection=
 	'<style>'+	
 	'#sliding-image-1 {'+			   
-			'background-image: url("images/bg_1.jpg")'+
+			'background-image: url("images/bg_1.jpg");height:293px'+
 		'}'+		  
 		'#sliding-image-2 {'+			   
-			'background-image: url("images/bg_2.jpg")'+
+			'background-image: url("images/bg_2.jpg");height:239px'+
 		'}'+
 	'@media only screen and (max-width: 600px) {'+	
 		'#sliding-image-1 {'+			   
@@ -129,7 +129,7 @@ var slideImageSection=
 	      '<div class="slider-item" id="sliding-image-1">'+
 	      	'<div class="overlay"></div>'+
 	      '</div>'+
-	      '<div class="slider-item" id="sliding-image-2">'+
+		  '<div class="slider-item" id="sliding-image-2">'+
 	      	'<div class="overlay"></div>'+
 	      '</div>'+
 	    '</div>'+
