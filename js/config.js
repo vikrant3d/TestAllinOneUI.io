@@ -106,7 +106,56 @@ var topHeader = '<div class="container">'+
 				    '</div>'+
 			    '</div>'+
 		    '</div>'+
-		  '</div>';		
+		  '</div>';	
+
+var slideImageSection=
+	'<style>'+	
+	'#sliding-image-1 {'+			   
+			'background-image: url("images/bg_1.jpg")'+
+		'}'+		  
+		'#sliding-image-2 {'+			   
+			'background-image: url("images/bg_2.jpg")'+
+		'}'+
+	'@media only screen and (max-width: 600px) {'+	
+		'#sliding-image-1 {'+			   
+			'background-image: url("images/bg_1_m.jpg")'+
+		'}'+		  
+		'#sliding-image-2 {'+			   
+			'background-image: url("images/bg_2_m.jpg")'+
+		'}'+			
+	'}</style>'+
+	'<section id="home-section" class="hero">'+
+		  '<div class="home-slider owl-carousel">'+
+	      '<div class="slider-item" id="sliding-image-1">'+
+	      	'<div class="overlay"></div>'+
+	      '</div>'+
+	      '<div class="slider-item" id="sliding-image-2">'+
+	      	'<div class="overlay"></div>'+
+	      '</div>'+
+	    '</div>'+
+    '</section>';
+	
+var cartSlider='<style>'+	
+	'#sliding-image-1 {'+			   
+			'background-image: url("images/bg_1.jpg")'+
+		'}'+
+	'@media only screen and (max-width: 600px) {'+	
+		'#sliding-image-1 {'+			   
+			'background-image: url("images/bg_1_m.jpg")'+
+		'}'+			
+	'}</style>'+
+	'<div class="hero-wrap hero-bread" id="sliding-image-1">'+
+      '<div class="container">'+
+        '<div class="row no-gutters slider-text align-items-center justify-content-center">'+
+          '<div class="col-md-9 ftco-animate text-center">'+
+            '<h1 class="mb-0 bread">My Cart</h1>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+
+$("#cartSliderSection").html(cartSlider);	
+$("#slideImageSection").html(slideImageSection);		
 $("#topHeadersection").html(topHeader);		
 $("#footersection").html(footerSection);
 $("#deliverysection").html(deliverySection);  
