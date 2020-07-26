@@ -111,17 +111,17 @@ var topHeader = '<div class="container">'+
 var slideImageSection=
 	'<style>'+	
 	'#sliding-image-1 {'+			   
-			'background-image: url("images/bg_1.jpg");height:293px'+
+			'background-image: url("images/bg_1.jpg");'+
 		'}'+		  
 		'#sliding-image-2 {'+			   
-			'background-image: url("images/bg_2.jpg");height:239px'+
+			'background-image: url("images/bg_2.jpg");'+
 		'}'+
 	'@media only screen and (max-width: 600px) {'+	
 		'#sliding-image-1 {'+			   
-			'background-image: url("images/bg_1_m.jpg")'+
+			'background-image: url("images/bg_1_m.jpg");background-size: cover;'+
 		'}'+		  
 		'#sliding-image-2 {'+			   
-			'background-image: url("images/bg_2_m.jpg")'+
+			'background-image: url("images/bg_2_m.jpg");background-size: cover;'+
 		'}'+			
 	'}</style>'+
 	'<section id="home-section" class="hero">'+
@@ -129,7 +129,7 @@ var slideImageSection=
 	      '<div class="slider-item" id="sliding-image-1">'+
 	      	'<div class="overlay"></div>'+
 	      '</div>'+
-		  '<div class="slider-item" id="sliding-image-2">'+
+		'<div class="slider-item" id="sliding-image-2">'+
 	      	'<div class="overlay"></div>'+
 	      '</div>'+
 	    '</div>'+
@@ -141,7 +141,7 @@ var cartSlider='<style>'+
 		'}'+
 	'@media only screen and (max-width: 600px) {'+	
 		'#sliding-image-1 {'+			   
-			'background-image: url("images/bg_1_m.jpg")'+
+			'background-image: url("images/bg_1_m.jpg");background-size: cover;'+
 		'}'+			
 	'}</style>'+
 	'<div class="hero-wrap hero-bread" id="sliding-image-1">'+
