@@ -3,7 +3,7 @@ var myPath="../";
 if(document.getElementById("myConfigLib") != null){
 	myPath="";
 }
-var footerSection =  '<footer class="footer">'+
+var footerSection =  '<br><br><footer class="footer">'+
             '<div class="container">'+
                 '<div class="row">'+
                     '<div class="col-md-9">'+
@@ -107,6 +107,18 @@ var topHeader = '<div class="container">'+
 			    '</div>'+
 		    '</div>'+
 		  '</div>';	
+		  
+var topHeaderLogo = '<div class="container">'+
+    		'<div class="row no-gutters d-flex align-items-start align-items-center px-md-0">'+
+	    		'<div class="col-lg-12 d-block">'+
+		    		'<div class="row d-flex">'+
+		    			'<div class="col-md-9 pr-4 d-flex  align-items-center">'+
+					    	' <span class="text" style="color: white;font-size: 26px;font-weight: bold;"><img src="'+myPath+'img/mainlogo.png" style="height:75px;"/></span>'+
+					    '</div>'+
+				    '</div>'+
+			    '</div>'+
+		    '</div>'+
+		  '</div>';	
 
 var slideImageSection=
 	'<style>'+	
@@ -144,16 +156,33 @@ var cartSlider='<style>'+
 			'background-image: url("images/bg_1_m.jpg");background-size: cover;'+
 		'}'+			
 	'}</style>'+
-	'<div class="hero-wrap hero-bread" id="sliding-image-1">'+
-      '<div class="container">'+
-        '<div class="row no-gutters slider-text align-items-center justify-content-center">'+
-          '<div class="col-md-9 ftco-animate text-center">'+
-            '<h1 class="mb-0 bread">My Cart</h1>'+
-          '</div>'+
-        '</div>'+
-      '</div>'+
-    '</div>';
-
+	'<div class="hero-wrap hero-bread" id="sliding-image-1"></div>'+
+	'<div class="container">'+
+		'<div class="row text-center" style="display: block;width: 100%;">'+
+			'<img src="../img/mycartdetails.png" style="max-width:100%">'+
+		'</div>'+
+	'</div>';	
+	
+var parentTopHeader = 
+			'<div class="container">'+
+    		'<div class="row no-gutters d-flex align-items-start align-items-center px-md-0">'+
+	    		'<div class="col-lg-12 d-block">'+
+		    		'<div class="row d-flex">'+
+		    			'<div class="col-md-8">'+
+					    	'<span class="text" style="font-size:28px;color:white;font-weight:bold">'+
+									'<img src="img/mainlogo.png" style="height:75px;">'+
+							'</span>'+
+					    '</div>'+
+						'<div class="col-md-4">'+
+							'<a href="Registration.html"><img src="img/DoBusinessWithUs.png" width="175" height="60"></a>'+
+							'<span class="text playStoreIcon">&nbsp;<a href="https://play.google.com/store/apps/details?id=com.ulweallinone&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1"><img alt="Get it on Google Play" src="img/applogo.PNG" style="height:40px;border-radius:10px;"/></a></span>'+
+					    '</div>'+					   
+				    '</div>'+
+			    '</div>'+
+		    '</div>'+
+		'</div>';	
+$("#topHeaderLogoSection").html(topHeaderLogo);
+$("#parentTopHeaderSection").html(parentTopHeader);
 $("#cartSliderSection").html(cartSlider);	
 $("#slideImageSection").html(slideImageSection);		
 $("#topHeadersection").html(topHeader);		
