@@ -529,31 +529,51 @@ function updateVendorDetails(){
 }
 
 function generateMaster(response1){
-	var str = "<input type='button' onclick='return displayProfile();' value='View Update Profile' class='btn btn-primary' />";
-	str = str + "<table><tr><th>ID</th><th>Product Name</th><th>Status</th><th>Product Description</th><th>Min Price</th><th>Max Price</th><th>Status</th><th>Update</th></tr>";
+	var str = "<style>th{text-align:center;}</style><div class='col-sm-12' style='margin-bottom: 15px;'><input type='button' onclick='return displayProfile();' value='View Update Profile' class='btn btn-primary' />&nbsp;&nbsp;<input type='button' onclick='return sendImagesToFTP(this);' value='Transfer Images to FTP Server' class='btn btn-primary' /></div>";
+	str = str + "<br><table><tr style='border-top: 1px solid;'><th>ID</th><th>Product Name</th><th>Status</th><th>Product<br>Description</th><th>Min<br>Price</th><th>Max<br>Price</th><th>Status</th><th>Stock</th><th>Image</th><th>Update</th></tr>";
 	var nextid = 1;
 	$(response1).each(function(i,response){
-		str = str + '<tr data-id="'+i+'"><td><input type="text" size="1" data-id="'+$(response).attr('id')+'" id="productId'+i+'" readonly value="'+$(response).attr('productId')+'"></td><td><input id="productName'+i+'" type="text" value="'+$(response).attr('productName')+'"></td><td><input type="text" size="2" id="stockStatusM'+i+'" value="'+$(response).attr("stockStatus")+'"></td><td></td><td></td><td></td><td></td><td><input type="button" class="btn btn-primary" onClick="return updateRow('+i+')" value="Update" /><input type="button" class="btn btn-primary" onClick="return addNewChild('+i+')" value="Add Child Record" /></tr>';
+		str = str + '<tr data-id="'+i+'" style="border-top: 1px solid;"><td><input type="number" style="width:50px" data-prodid="'+$(response).attr('id')+'" id="productId'+i+'" readonly value="'+$(response).attr('productId')+'"></td><td><input id="productName'+i+'" type="text" maxlength="20" value="'+$(response).attr('productName')+'"></td><td><input type="text" style="width:30px" id="stockStatusM'+i+'" value="'+$(response).attr("stockStatus")+'"></td><td></td><td></td><td></td><td></td><td><input type="text" style="width:30px"  value="5"></td><td><input type="file" data-fileid="'+$(response).attr('id')+'" class="productimage" style="width: 104px;"><img id="'+$(response).attr('id')+'custPic-orignal" width="500px" style="display:none"><div class="'+$(response).attr('id')+'image-sec-cust"><img id="'+$(response).attr('id')+'custPic-image" ></div></td><td><input type="button" class="btn btn-primary btn-sm" onClick="return updateRow('+i+')" value="Update" />&nbsp;&nbsp;<input type="button" class="btn btn-primary btn-sm" onClick="return addNewChild('+i+')" value="Add Child Record" /></tr>';
 		$($(response).attr("productDetailsList")).each(function(j,response){
-			str= str +'<tr><td></td><td></td><td></td><td><input class="productdesc'+i+'" type="text" value="'+$(this).attr('productDesc')+'"></td><td><input type="text" class="minVal'+i+'" size="2" value="'+$(this).attr("minPrice")+'"></td><td><input class="maxVal'+i+'" type="text" size="2" value="'+$(this).attr("maxPrice")+'"></td><td><input type="text" size="2" class="stockStatus'+i+'" value="'+$(this).attr("stockStatus")+'"></td></tr>';
+			str= str +'<tr><td></td><td></td><td></td><td><input class="productdesc'+i+'" maxlength="20" type="text" value="'+$(this).attr('productDesc')+'"></td><td><input type="number" class="minVal'+i+'"  style="width: 60px;" value="'+$(this).attr("minPrice")+'"></td><td><input class="maxVal'+i+'" type="number" style="width: 60px;" value="'+$(this).attr("maxPrice")+'"></td><td><input type="text" style="width:30px" class="stockStatus'+i+'" value="'+$(this).attr("stockStatus")+'"></td><td></td><td></td></tr>';
 		})
 		nextid = $(response).attr('productId');
 	});
 	$("#orderDetails").html(addNewRow(str,++nextid));
-
+	$('.productimage').change(function (e) {
+  		resizeCustPic($(this),e);
+    });
 }
 
 function addNewRow(str,i){
-	str = str + '<tr><td><input type="text" size="1" data-id="" id="productId'+i+'" value="'+i+'"></td><td><input id="productName'+i+'" type="text"></td><td><input type="text" size="2" id="stockStatusM'+i+'" ></td><td></td><td></td><td></td><td></td><td><input type="button" class="btn btn-primary" onClick="return updateRow('+i+')" value="Add New Record" /><input type="button" class="btn btn-primary" onClick="return addNewChild('+i+')" value="Add Child Record" /></td></tr>';
-	str = str + '<tr data-id="'+i+'"><td></td><td></td><td></td><td><input class="productdesc'+i+'" type="text" ></td><td><input type="text" class="minVal'+i+'" size="2" ></td><td><input class="maxVal'+i+'" type="text" size="2" ></td><td><input type="text" size="2" class="stockStatus'+i+'" ></td></tr></table>';
+	str = str + '<tr style="border-top: 1px solid;"><td><input type="number" readonly style="width:50px" data-prodid="" id="productId'+i+'" value="'+i+'"></td><td><input maxlength="20" id="productName'+i+'" type="text"></td><td><input type="text" size="2" id="stockStatusM'+i+'"  style="width:30px" ></td><td></td><td></td><td></td><td></td><td><input type="text" style="width:30px"  value="5"></td><td><input type="file" data-fileid="'+i+'" class="productimage" style="width: 104px;"><img id="'+i+'custPic-orignal" width="500px" style="display:none"><div class="'+i+'image-sec-cust"><img id="'+i+'custPic-image" ></div></td><td><input type="button" class="btn btn-primary btn-sm" onClick="return updateRow('+i+')" value="Add New Record" />&nbsp;&nbsp;<input type="button" class="btn btn-primary btn-sm" onClick="return addNewChild('+i+')" value="Add Child Record" /></td></tr>';
+	str = str + '<tr data-id="'+i+'" ><td></td><td></td><td></td><td><input class="productdesc'+i+'" type="text" ></td><td><input type="number" class="minVal'+i+'"  style="width: 60px;" ></td><td><input class="maxVal'+i+'" type="number"  style="width: 60px;" ></td><td><input type="text" style="width:30px" class="stockStatus'+i+'" ></td></tr></table>';
 	return str;
 }
 
 function addNewChild(i){
-	var str ='<tr><td></td><td></td><td></td><td><input class="productdesc'+i+'" type="text" ></td><td><input type="text" class="minVal'+i+'" size="2" ></td><td><input class="maxVal'+i+'" type="text" size="2" ></td><td><input type="text" size="2" class="stockStatus'+i+'" ></td></tr></table>';
+	var str ='<tr><td></td><td></td><td></td><td><input class="productdesc'+i+'" type="text" maxlength="20" ></td><td><input type="number" class="minVal'+i+'"  style="width: 60px;" ></td><td><input class="maxVal'+i+'" type="number"  style="width: 60px;" ></td><td><input type="text" style="width:30px" class="stockStatus'+i+'" ></td></tr></table>';
 	$('table > tbody ').find("[data-id='"+i+"']").after(str);
 }
 
+function sendImagesToFTP(obj){
+	if(confirm("Are you sure you want to send Images data to FTP server? Before send Please add images to product")){
+		$(obj).attr('disabled',true);
+		$(obj).attr('value','Please wait sending images data to FTP ...');
+		$.ajax({
+		  type: 'POST',
+		  url: contextCommon + "transferToFTP",
+		  success: function (response) { 
+					alert("Images successfully transfered to FTP server. Images will reflect in 30 secounds");	
+					$(obj).attr('disabled',false);
+					$(obj).attr('value','Transfer Images to FTP Server');				
+				},
+		  error : function (response) { 
+					alert(response);
+				}
+		});
+	}
+}
 
 function updateRow(i){
 	$('#lodaingModal').modal('show');
@@ -597,7 +617,17 @@ function updateRow(i){
 	}
 	//map["discount"]=disCal;*/
 	map["productId"]=$("#productId"+i).val();
-	map["id"]=$("#productId"+i).attr("data-id");
+	var prodImgId = $("#productId"+i).attr("data-prodid");
+	if($("#productId"+i).attr("data-prodid") == ""){
+		prodImgId = $("#productId"+i).val();
+	}
+	map["id"]=$("#productId"+i).attr("data-prodid");
+	var imgData='';
+	var imgObj = document.getElementById(prodImgId+"custPic-image").src;
+	if(imgObj != undefined && imgObj != ""){
+		imgData = imgObj.split(',')[1];
+	}	
+	map["productImg"]=imgData;
 	updateTables(JSON.stringify(map),"updateProductMaster","initMasterRates");
 	return false;
 }
