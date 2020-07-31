@@ -22,8 +22,7 @@ function initMap(type){
 							map[$(this).attr('productId')]=$(this).attr('productName')+","+$(this).attr('stockStatus')+","+JSON.stringify($(this).attr('productDetailsList'));
 					})
 					if(type == 'H'){
-						generateProduct(response[1]);
-						
+						generateProduct(response[1]);						
 					}
 					localStorage.setItem(myCurrentReq+"mymap",JSON.stringify(map))	;
 					setTimeout(hidePopup, 600);
@@ -56,12 +55,43 @@ function cardCount(){
 }
 
 function addtoCard(id,obj){
+	var myQty = $('option:selected', $("#catgID"+id)).attr('data-maxqty');	
+	if(myQty == -1 ){
+		cartmsgContent(id);		
+	}else{ 
+		var newMyQty = parseInt($("#qtyID"+id).val()) + checkAlreadyCartAddedCount(id);
+		if(myQty >= newMyQty){
+			cartmsgContent(id);	
+		}else{
+			$("#alertMsg").html("Sorry! Only "+$('option:selected', $("#catgID"+id)).attr('data-maxqty')+" items are available in stock for "+map[id].split(",")[0]);
+		}
+	}
+	$("#alertModal").modal('show');
+	return false;
+}
+function cartmsgContent(id){
 	var cardId = id +"#"+ $("#qtyID"+id).val() + "#" + $("#catgID"+id).find(':selected').attr('data-id');
 	localStorage.setItem(myCurrentReq+"card",localStorage.getItem(myCurrentReq+"card")+","+cardId);
 	cardCount();
-	$("#alertMsg").html(map[id].split(",")[0]+ " successfully added to cart.");
-	$("#alertModal").modal('show');
-	return false;
+	$("#alertMsg").html(map[id].split(",")[0]+ " successfully added to cart, with "+$("#qtyID"+id).val()+" quantity.");
+}
+function checkAlreadyCartAddedCount(id){
+	var count = 0;
+	var iteams  = localStorage.getItem(myCurrentReq+"card");
+	if(iteams != null){
+		$.each(iteams.split(','),function(i,p){
+		if(p != "null" && p != ""){
+			var k=p.split("#")[1];
+				if(k == undefined){
+					k=1;
+				}				
+				if(p.split("#")[0] == id && p.split("#")[2] == $("#catgID"+id).find(':selected').attr('data-id')){
+					count = count + parseInt(k);
+				}			
+			}
+		});
+	}
+	return count;	
 }
 var finalCPrice
 var isCoupancase="N";
@@ -148,7 +178,7 @@ function displayCardDetails(){
 			var finalPrice = $(obj).attr('minPrice') * k;
 			var clickFn = "return removeProduct('"+p+"',"+i+")";
 			var name = map[j].substr(0,map[j].indexOf(","));
-			var str = '<div class="col-md-6 col-lg-3 ftco-animate fadeInUp ftco-animated" id="sectiondetails'+i+'"><div class="product"><a href="javascript:void(0)" style="text-align: center" class="img-prod"><img class="img-fluid" src="images/product-'+j+'.jpg" alt="Colorlib Template"><div class="overlay"></div></a><div class="text pb-4 px-3 text-center"><h3><a href="javascript:void(0)">'+name+'</a></h3><h5>'+$(obj).attr('productDesc')+'</h5><div class="pricing123"><p class="price"><span class="price-sale" style="'+style+'" >Price - '+$(obj).attr('minPrice')+' Rs</span><br><span style="'+style+'" class="price-sale">&nbsp;&nbsp;Quantity - '+k+'</span><br><span class="price-sale" style="'+style+'">&nbsp;&nbsp;Final Price - '+finalPrice+' Rs</span><br><span class="price-sale">&nbsp;&nbsp;<input type="button" value="Remove from cart" onclick="'+clickFn +'" class="btn btn-primary"  ></span><span class="total" style="display:none" data-val="'+j+','+k+'" id="totVal'+i+'">'+finalPrice+' Rs</span></p></div></div></div></div>';
+			var str = '<div class="col-md-6 col-lg-3 ftco-animate fadeInUp ftco-animated" id="sectiondetails'+i+'"><div class="product"><a href="javascript:void(0)" style="text-align: center" class="img-prod"><img class="img-fluid" src="images/product-'+j+'.jpg" style="height: 190px;width: 190px;" alt="No Image"><div class="overlay"></div></a><div class="text pb-4 px-3 text-center"><h3><a href="javascript:void(0)">'+name+'</a></h3><h5>'+$(obj).attr('productDesc')+'</h5><div class="pricing123"><p class="price"><span class="price-sale" style="'+style+'" >Price - '+$(obj).attr('minPrice')+' Rs</span><br><span style="'+style+'" class="price-sale">&nbsp;&nbsp;Quantity - '+k+'</span><br><span class="price-sale" style="'+style+'">&nbsp;&nbsp;Final Price - '+finalPrice+' Rs</span><br><span class="price-sale">&nbsp;&nbsp;<input type="button" value="Remove from cart" onclick="'+clickFn +'" class="btn btn-primary"  ></span><span class="total" style="display:none" data-val="'+j+','+k+'" id="totVal'+i+'">'+finalPrice+' Rs</span></p></div></div></div></div>';
 			$("#cardDetailsData").append(str);
 			}
 		}
@@ -187,48 +217,63 @@ function generateProduct(columnIndex){
 		var disc ="";
 		var descDesc ="<br> Category ";
 		var hideSelect = '';
-		if(desc.length == 1){
-			hideSelect = hideSelect + "style=display:none;"
-			descDesc = descDesc + ": <a href='javascript:void(0)' style='color: black;'>"+$(desc).eq(0).attr('productDesc')+"</a>";
-		}
-		descDesc = descDesc + "<select id='catgID"+key+"' onchange='return calcPrice(this,"+key+")' "+hideSelect+">";
-		var q=0;
+		var detailsCount = 0;
+		var prodDesc="";
 		$(desc).each(function(){
-				if($(this).attr('stockStatus') != 'D'){
-					descDesc = descDesc + "<option data-id='"+$(this).attr('id')+"' data-max='"+$(this).attr('maxPrice')+"' data-dis='"+$(this).attr('discount')+"' data-min='"+$(this).attr('minPrice')+"' value='"+$(this).attr('productDesc')+"'>"+$(this).attr('productDesc')+"</option>";
-					if(q == 0){
-						minPrice = $(this).attr('minPrice');
-						maxPrice = $(this).attr('maxPrice');
-						disc = $(this).attr('discount');
-					}
-					q++;
-				}
+			if($(this).attr('stockStatus') != 'D'){
+				detailsCount++;
+				prodDesc = $(this).attr('productDesc');
+			}
 		});
-		descDesc = descDesc + "</select>";
-	
-	var valuesDetails = value.split(",");
-	if(displayComp != 'D'){
-		var firstDiscPrice="";
-		var discClass = "";
-		if(maxPrice != minPrice){
-			firstDiscPrice = disc;
-			discClass="status";
-		}
-		var outOfStock
-		if(displayComp == "Y" ){
-			outOfStock='<br><span> Quantity <input type="number" id="qtyID'+key+'" value="1" min="1" max="99" onblur="return checkQtyStatus(this)" onKeyup="return checkQty(this)" size="4" style="margin-bottom: 6px;text-align: center;"></span><input type="button" onClick="return addtoCard('+key+',this)" class="btn btn-primary" value="Add to Cart">';
-		}else{
-			outOfStock='<br><span class="btn btn-danger">Out of Stock</span>';
-		}
-		var ourProducts = '<div class="col-md-6 col-lg-'+columnIndex+' ftco-animate fadeInUp ftco-animated productNameClass" data-id="'+valuesDetails[0]+'" ><div class="product"><a href="javascript:void(0)" class="img-prod" style="text-align: center"><img class="img-fluid" src="images/product-'+key+'.jpg" alt="No Image" style="height: 190px;width: 190px;"><span id="discountSec'+key+'" class="'+discClass+'">'+firstDiscPrice+'</span><div class="overlay"></div></a><div class="text pb-4 px-3 text-center"><h3><a href="javascript:void(0)">'+valuesDetails[0]+'</a></h3><div class=""><div class="pricing123"><p class="price"  ><span id="priceSection'+key+'">'+getAmountDesc(maxPrice,minPrice,disc,key)+'</span><span class="price-sale" >'+descDesc+'</span>'+outOfStock+'</p></div></div></div></div></div>';
-		$("#productDetails").append(ourProducts);
+		if(detailsCount != 0){
+			if(detailsCount == 1){
+				hideSelect = hideSelect + "style=display:none;"
+				descDesc = descDesc + ": <a href='javascript:void(0)' style='color: black;'>"+prodDesc+"</a>";
+			}
+			descDesc = descDesc + "<select id='catgID"+key+"' onchange='return calcPrice(this,"+key+")' "+hideSelect+">";
+			var q=0;
+			$(desc).each(function(){
+					if($(this).attr('stockStatus') != 'D'){
+						descDesc = descDesc + "<option data-maxQty='"+$(this).attr('stockCount')+"' data-id='"+$(this).attr('id')+"' data-max='"+$(this).attr('maxPrice')+"' data-dis='"+$(this).attr('discount')+"' data-min='"+$(this).attr('minPrice')+"' value='"+$(this).attr('productDesc')+"'>"+$(this).attr('productDesc')+"</option>";
+						if(q == 0){
+							minPrice = $(this).attr('minPrice');
+							maxPrice = $(this).attr('maxPrice');
+							maxQty = $(this).attr('stockCount');
+							disc = $(this).attr('discount');
+						}
+						q++;
+					}
+			});
+			descDesc = descDesc + "</select>";
+		
+			var valuesDetails = value.split(",");
+			if(displayComp != 'D'){
+				var firstDiscPrice="";
+				var discClass = "";
+				if(maxPrice != minPrice){
+					firstDiscPrice = disc;
+					discClass="status";
+				}
+				var outOfStock
+				if(displayComp == "Y" ){
+					outOfStock='<br><span> Quantity <input type="number" id="qtyID'+key+'" value="1" min="1" max="99" onblur="return checkQtyStatus(this)" onKeyup="return checkQty(this)" size="4" style="margin-bottom: 6px;text-align: center;"></span><input type="button" onClick="return addtoCard('+key+',this)" class="btn btn-primary" value="Add to Cart">';
+				}else{
+					outOfStock='<br><span class="btn btn-danger">Out of Stock</span>';
+				}
+				var limiStr="";
+				if(maxQty != -1){
+					limiStr = 'Hurry! Only '+maxQty+' quanitiy Available.';
+				}
+				var ourProducts = '<div class="col-md-6 col-lg-'+columnIndex+' ftco-animate fadeInUp ftco-animated productNameClass" data-id="'+valuesDetails[0]+'" ><div class="product"><a href="javascript:void(0)" class="img-prod" style="text-align: center"><img class="img-fluid" src="images/product-'+key+'.jpg" alt="No Image" style="height: 190px;width: 190px;"><span id="discountSec'+key+'" class="'+discClass+'">'+firstDiscPrice+'</span><div class="overlay"></div></a><div class="text pb-4 px-3 text-center"><h3><a href="javascript:void(0)">'+valuesDetails[0]+'</a></h3><h6 id="stockQtyId'+key+'" style="color: red;font-size: small;">'+limiStr+'</h6><div class=""><div class="pricing123"><p class="price"  ><span id="priceSection'+key+'">'+getAmountDesc(maxPrice,minPrice,disc,key,maxQty)+'</span><span class="price-sale" >'+descDesc+'</span>'+outOfStock+'</p></div></div></div></div></div>';
+				$("#productDetails").append(ourProducts);
+				}
 		}
 	});
 	var cartContent = "<div class='row'><div class='col-md-12' align='center'><a href='"+$(".icon-shopping_cart").parent().attr('href')+"' class='nav-link'> <span class='btn btn-primary py-3 px-5' style='font-size: 25px;color:black;'>Proceed For Order &nbsp;&nbsp;<span class='icon-shopping_cart w3-large'></span><span class='cardCount' style='font-size: 25px;black;'></span></span></a></div></div>"
 	$("#productDetails").parent().append(cartContent);
 }
 
-function getAmountDesc(maxPrice,minPrice,disc,key){
+function getAmountDesc(maxPrice,minPrice,disc,key,maxQty){
 	var discStr = "";
 	if(maxPrice == minPrice){
 		discStr='<span  class="price-sale" id="maxP'+key+'" >Our Price '+minPrice+' Rs</span>';
@@ -237,16 +282,19 @@ function getAmountDesc(maxPrice,minPrice,disc,key){
 		discStr='<span  class="mr-2 price-dc" id="maxP'+key+'" >MRP '+maxPrice+' Rs</span><br><span class="price-sale" id="minP'+key+'" >Our Price '+minPrice+' Rs</span>';
 		$("#discountSec"+key).addClass('status').html(disc);
 	}
+	$("#stockQtyId"+key).html("");
+	if(maxQty != -1){
+		$("#stockQtyId"+key).html("Hurry! Only "+maxQty+" quanitiy Available.");
+	}
 	return discStr;
 }
 
 function calcPrice(obj,key){
-	var result = getAmountDesc($(obj).find(':selected').attr('data-max'),$(obj).find(':selected').attr('data-min'),$(obj).find(':selected').attr('data-dis'),key);
+	var result = getAmountDesc($(obj).find(':selected').attr('data-max'),$(obj).find(':selected').attr('data-min'),$(obj).find(':selected').attr('data-dis'),key,$(obj).find(':selected').attr('data-maxQty'));
 	$("#priceSection"+key).html(result);
 }
 
-function displaySearchResult(obj){
-	
+function displaySearchResult(obj){	
 	if($(obj).val() != ""){
 		$(".productNameClass").each(function(){
 			if($(this).attr('data-id').toLowerCase().indexOf($(obj).val().toLowerCase()) == -1){
@@ -530,12 +578,12 @@ function updateVendorDetails(){
 
 function generateMaster(response1){
 	var str = "<style>th{text-align:center;}</style><div class='col-sm-12' style='margin-bottom: 15px;'><input type='button' onclick='return displayProfile();' value='View Update Profile' class='btn btn-primary' />&nbsp;&nbsp;<input type='button' onclick='return sendImagesToFTP(this);' value='Transfer Images to FTP Server' class='btn btn-primary' /></div>";
-	str = str + "<br><table><tr style='border-top: 1px solid;'><th>ID</th><th>Product Name</th><th>Status</th><th>Product<br>Description</th><th>Min<br>Price</th><th>Max<br>Price</th><th>Status</th><th>Stock</th><th>Image</th><th>Update</th></tr>";
+	str = str + "<br><table><tr style='border-top: 1px solid;'><th>ID</th><th>Product Name</th><th>Status</th><th>Product<br>Description</th><th>Min<br>Price</th><th>Max<br>Price</th><th>Status</th><th>Stock<br>Count</th><th>Image</th><th>Update</th></tr>";
 	var nextid = 1;
 	$(response1).each(function(i,response){
-		str = str + '<tr data-id="'+i+'" style="border-top: 1px solid;"><td><input type="number" style="width:50px" data-prodid="'+$(response).attr('id')+'" id="productId'+i+'" readonly value="'+$(response).attr('productId')+'"></td><td><input id="productName'+i+'" type="text" maxlength="20" value="'+$(response).attr('productName')+'"></td><td><input type="text" style="width:30px" id="stockStatusM'+i+'" value="'+$(response).attr("stockStatus")+'"></td><td></td><td></td><td></td><td></td><td><input type="text" style="width:30px"  value="5"></td><td><input type="file" data-fileid="'+$(response).attr('id')+'" class="productimage" style="width: 104px;"><img id="'+$(response).attr('id')+'custPic-orignal" width="500px" style="display:none"><div class="'+$(response).attr('id')+'image-sec-cust"><img id="'+$(response).attr('id')+'custPic-image" ></div></td><td><input type="button" class="btn btn-primary btn-sm" onClick="return updateRow('+i+')" value="Update" />&nbsp;&nbsp;<input type="button" class="btn btn-primary btn-sm" onClick="return addNewChild('+i+')" value="Add Child Record" /></tr>';
+		str = str + '<tr data-id="'+i+'" style="border-top: 1px solid;"><td><input type="number" style="width:50px" data-prodid="'+$(response).attr('id')+'" id="productId'+i+'" readonly value="'+$(response).attr('productId')+'"></td><td><input id="productName'+i+'" type="text" maxlength="20" value="'+$(response).attr('productName')+'"></td><td><input type="text" style="width:30px" id="stockStatusM'+i+'" value="'+$(response).attr("stockStatus")+'"></td><td></td><td></td><td></td><td></td><td></td><td><input type="file" data-fileid="'+$(response).attr('id')+'" class="productimage" style="width: 104px;"><img id="'+$(response).attr('id')+'custPic-orignal" width="500px" style="display:none"><div class="'+$(response).attr('id')+'image-sec-cust"><img id="'+$(response).attr('id')+'custPic-image" ></div></td><td><input type="button" class="btn btn-primary btn-sm" onClick="return updateRow('+i+')" value="Update" />&nbsp;&nbsp;<input type="button" class="btn btn-primary btn-sm" onClick="return addNewChild('+i+')" value="Add Child Record" /></tr>';
 		$($(response).attr("productDetailsList")).each(function(j,response){
-			str= str +'<tr><td></td><td></td><td></td><td><input class="productdesc'+i+'" maxlength="20" type="text" value="'+$(this).attr('productDesc')+'"></td><td><input type="number" class="minVal'+i+'"  style="width: 60px;" value="'+$(this).attr("minPrice")+'"></td><td><input class="maxVal'+i+'" type="number" style="width: 60px;" value="'+$(this).attr("maxPrice")+'"></td><td><input type="text" style="width:30px" class="stockStatus'+i+'" value="'+$(this).attr("stockStatus")+'"></td><td></td><td></td></tr>';
+			str= str +'<tr><td></td><td></td><td></td><td><input class="productdesc'+i+'" maxlength="20" type="text" value="'+$(this).attr('productDesc')+'"></td><td><input type="number" class="minVal'+i+'"  style="width: 60px;" value="'+$(this).attr("minPrice")+'"></td><td><input class="maxVal'+i+'" type="number" style="width: 60px;" value="'+$(this).attr("maxPrice")+'"></td><td><input type="text" style="width:30px" class="stockStatus'+i+'" value="'+$(this).attr("stockStatus")+'"></td><td><input type="number" style="width:50px" class="stockCount'+i+'" value="'+$(this).attr("stockCount")+'"></td></tr>';
 		})
 		nextid = $(response).attr('productId');
 	});
@@ -546,13 +594,13 @@ function generateMaster(response1){
 }
 
 function addNewRow(str,i){
-	str = str + '<tr style="border-top: 1px solid;"><td><input type="number" readonly style="width:50px" data-prodid="" id="productId'+i+'" value="'+i+'"></td><td><input maxlength="20" id="productName'+i+'" type="text"></td><td><input type="text" size="2" id="stockStatusM'+i+'"  style="width:30px" ></td><td></td><td></td><td></td><td></td><td><input type="text" style="width:30px"  value="5"></td><td><input type="file" data-fileid="'+i+'" class="productimage" style="width: 104px;"><img id="'+i+'custPic-orignal" width="500px" style="display:none"><div class="'+i+'image-sec-cust"><img id="'+i+'custPic-image" ></div></td><td><input type="button" class="btn btn-primary btn-sm" onClick="return updateRow('+i+')" value="Add New Record" />&nbsp;&nbsp;<input type="button" class="btn btn-primary btn-sm" onClick="return addNewChild('+i+')" value="Add Child Record" /></td></tr>';
-	str = str + '<tr data-id="'+i+'" ><td></td><td></td><td></td><td><input class="productdesc'+i+'" type="text" ></td><td><input type="number" class="minVal'+i+'"  style="width: 60px;" ></td><td><input class="maxVal'+i+'" type="number"  style="width: 60px;" ></td><td><input type="text" style="width:30px" class="stockStatus'+i+'" ></td></tr></table>';
+	str = str + '<tr style="border-top: 1px solid;"><td><input type="number" readonly style="width:50px" data-prodid="" id="productId'+i+'" value="'+i+'"></td><td><input maxlength="20" id="productName'+i+'" type="text"></td><td><input type="text" size="2" id="stockStatusM'+i+'"  style="width:30px" ></td><td></td><td></td><td></td><td></td><td></td><td><input type="file" data-fileid="'+i+'" class="productimage" style="width: 104px;"><img id="'+i+'custPic-orignal" width="500px" style="display:none"><div class="'+i+'image-sec-cust"><img id="'+i+'custPic-image" ></div></td><td><input type="button" class="btn btn-primary btn-sm" onClick="return updateRow('+i+')" value="Add New Record" />&nbsp;&nbsp;<input type="button" class="btn btn-primary btn-sm" onClick="return addNewChild('+i+')" value="Add Child Record" /></td></tr>';
+	str = str + '<tr data-id="'+i+'" ><td></td><td></td><td></td><td><input class="productdesc'+i+'" type="text" ></td><td><input type="number" class="minVal'+i+'"  style="width: 60px;" ></td><td><input class="maxVal'+i+'" type="number"  style="width: 60px;" ></td><td><input type="text" style="width:30px" class="stockStatus'+i+'" ></td><td><input type="number" style="width:50px" class="stockCount'+i+'" ></td></tr></table>';
 	return str;
 }
 
 function addNewChild(i){
-	var str ='<tr><td></td><td></td><td></td><td><input class="productdesc'+i+'" type="text" maxlength="20" ></td><td><input type="number" class="minVal'+i+'"  style="width: 60px;" ></td><td><input class="maxVal'+i+'" type="number"  style="width: 60px;" ></td><td><input type="text" style="width:30px" class="stockStatus'+i+'" ></td></tr></table>';
+	var str ='<tr><td></td><td></td><td></td><td><input class="productdesc'+i+'" type="text" maxlength="20" ></td><td><input type="number" class="minVal'+i+'"  style="width: 60px;" ></td><td><input class="maxVal'+i+'" type="number"  style="width: 60px;" ></td><td><input type="text" style="width:30px" class="stockStatus'+i+'" ></td><td><input type="text" style="width:50px" class="stockCount'+i+'" ></td></tr></table>';
 	$('table > tbody ').find("[data-id='"+i+"']").after(str);
 }
 
@@ -576,13 +624,47 @@ function sendImagesToFTP(obj){
 }
 
 function updateRow(i){
-	$('#lodaingModal').modal('show');
+	if($("#productName"+i).val() == ""){
+		alert("Please enter Product Name");
+		return false;
+	}
+	if(! ($("#stockStatusM"+i).val() == "Y" || $("#stockStatusM"+i).val() == "N" || $("#stockStatusM"+i).val() == "D")){
+		alert("Please enter valid Status.\n Status can be of Below combination \n Y - Available \n N - Out Of Stock \n D - Hide Product");
+		return false;
+	}		
+	
 	var map={};
 	map["password"]=$("#password").val();
 	
 	var j=0;
 	var str = "";
+	var validResult = true;
 	$(".productdesc"+i).each(function(){
+		
+		if($(".productdesc"+i).eq(j).val() == ""){
+			alert("Please enter valid Product Description");			
+			validResult =  false;
+		}
+		if($(".maxVal"+i).eq(j).val() == "" || $(".maxVal"+i).eq(j).val() < 0){
+			alert("Please enter valid Max Price");
+			validResult =  false;
+		}
+		if($(".minVal"+i).eq(j).val() == "" || $(".minVal"+i).eq(j).val() < 0){
+			alert("Please enter valid Mix Price");
+			validResult =  false;
+		}
+		if($(".minVal"+i).eq(j).val() > $(".maxVal"+i).eq(j).val()){
+			alert("Max Price must be greater or equal to Min Price");
+			validResult =  false;
+		}
+		if(!($(".stockStatus"+i).eq(j).val() == "Y" ||  $(".stockStatus"+i).eq(j).val() == "D")){
+			alert("Please enter valid Product Description record Status.\n Status can be of Below combination \n Y - Available \n D - Hide Product");
+			validResult =  false;
+		}
+		if($(".stockCount"+i).eq(j).val() == "" || $(".stockCount"+i).eq(j).val() < -1){
+			alert("Please enter valid Stock Count");
+			validResult =  false;
+		}
 		
 		if($(".maxVal"+i).eq(j).val() != " "){
 		var disCal = parseInt($(".maxVal"+i).eq(j).val()) - parseInt($(".minVal"+i).eq(j).val());
@@ -597,10 +679,13 @@ function updateRow(i){
 		}
 			
 		if($(this).val() != ""){
-			str =  str + $(".minVal"+i).eq(j).val() + "#"+$(".maxVal"+i).eq(j).val() + "#"+$(".stockStatus"+i).eq(j).val() + "#"+disCal+ "#"+$(this).val() +","
+			str =  str + $(".minVal"+i).eq(j).val() + "#"+$(".maxVal"+i).eq(j).val() + "#"+$(".stockStatus"+i).eq(j).val() +"#"+$(".stockCount"+i).eq(j).val() + "#"+disCal+ "#"+$(this).val()+","
 		}
 	   j++;
 	  });
+	if(! validResult){
+		return false;
+	}
 	map["details"]=str.substr(0,str.length-1);
 	map["productName"]=$("#productName"+i).val();
 	map["stockStatus"]=$("#stockStatusM"+i).val();
@@ -627,7 +712,8 @@ function updateRow(i){
 	if(imgObj != undefined && imgObj != ""){
 		imgData = imgObj.split(',')[1];
 	}	
-	map["productImg"]=imgData;
+	map["productImg"]=imgData;	
+	$('#lodaingModal').modal('show');
 	updateTables(JSON.stringify(map),"updateProductMaster","initMasterRates");
 	return false;
 }
@@ -723,6 +809,7 @@ $("#ordersection").hide();
 					if($(response).attr('coupanCode') != null){
 						 coupanStr= ', Coupon Used '+$(response).attr('coupanCode');
 					}
+					
 					$("#orderHeader").html('Thank you '+ $($(response).attr('user')).attr('userName') + ' for placing order.')
 					str = str + '<p> Your order was placed on '+$(response).attr('datetime')+'. Order status is <b>'+$(response).attr('orderStatus')+'</b>. </p>';
 					str = str + '<p> Total Amount was  '+$(response).attr('finalPrice')+' Rs, Discount was '+$(response).attr('discount')+' Rs, Delivery charges was '+$(response).attr('deliveryCharge')+' Rs'+coupanStr+'. </p>';
