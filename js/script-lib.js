@@ -809,6 +809,16 @@ $("#ordersection").hide();
 					if($(response).attr('coupanCode') != null){
 						 coupanStr= ', Coupon Used '+$(response).attr('coupanCode');
 					}
+					var orderOne = 'active';
+					var orderTwo = '';
+					var deliveryKey = 'Delivered';
+					if($(response).attr('orderStatus') != 'In-Progress'){
+						deliveryKey = $(response).attr('orderStatus');
+						orderTwo = orderOne;
+					}
+					var orderInfo = '<ul id="progressbar" class="text-center"><li class="'+orderOne+' step0"></li><li class="'+orderOne+' step0"></li><li class="'+orderTwo+' step0"></li><li class="'+orderTwo+' step0"></li></ul>';
+					$("#orderInfo").html(orderInfo);
+					$("#orderStatusName").html(deliveryKey);
 					
 					$("#orderHeader").html('Thank you '+ $($(response).attr('user')).attr('userName') + ' for placing order.')
 					str = str + '<p> Your order was placed on '+$(response).attr('datetime')+'. Order status is <b>'+$(response).attr('orderStatus')+'</b>. </p>';
@@ -816,12 +826,12 @@ $("#ordersection").hide();
 					str = str + '<p> Delivery person will contact you on mobile no '+$($(response).attr('user')).attr('mobileNo')+', or email id '+$($(response).attr('user')).attr('emailid')+'. </p>';
 					str = str + '<p> Delivery address is '+$($(response).attr('user')).attr('address')+'. </p>';
 					str = str + '<br><p><b>Below are order details</b></p>';
-			
-				 str= str +"<ol>";
+				var imgStr = $(response).attr('clientIp')+"/images/product-";
+				 str= str +"<table class='table-striped table-bordered table-hover'>";
 					$($($(response).attr('orderDetailsList'))).each(function(i,response){
-						str= str +"<li>"+$(response).attr('description')+"</li>";
+						str= str +"<tr><td style='padding:10px'><img style='height:150px;width:150px' src="+imgStr+$(response).attr('productId')+".jpg></td><td style='padding:10px'>"+$(response).attr('description')+"</td></tr>";
 					});
-				str= str + "</ol></br>"
+				str= str + "</table></br>"
 				$("#detailssub").html(str);
 				$("#ordersection").show();
 				category = $($(response).attr('master')).attr('catagory');
