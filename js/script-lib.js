@@ -661,8 +661,8 @@ function updateRow(i){
 			alert("Please enter valid Product Description record Status.\n Status can be of Below combination \n Y - Available \n D - Hide Product");
 			validResult =  false;
 		}
-		if($(".stockCount"+i).eq(j).val() == "" || $(".stockCount"+i).eq(j).val() < -1){
-			alert("Please enter valid Stock Count");
+		if($(".stockCount"+i).eq(j).val() == "" || $(".stockCount"+i).eq(j).val() < -1 || $(".stockCount"+i).eq(j).val() == 0){
+			alert("Please enter valid Stock Count \n Stock Count has below combination \n -1 : Items has infinity count \n 0 : Item cannot have 0 count \n Any Other Positive have can be accepted.");
 			validResult =  false;
 		}
 		
