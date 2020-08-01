@@ -653,7 +653,7 @@ function updateRow(i){
 			alert("Please enter valid Mix Price");
 			validResult =  false;
 		}
-		if($(".minVal"+i).eq(j).val() > $(".maxVal"+i).eq(j).val()){
+		if(parseInt($(".minVal"+i).eq(j).val()) > parseInt($(".maxVal"+i).eq(j).val())){
 			alert("Max Price must be greater or equal to Min Price");
 			validResult =  false;
 		}
