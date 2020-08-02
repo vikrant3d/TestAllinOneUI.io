@@ -1,7 +1,7 @@
 var myCurrentReq = document.getElementById("myscriptLib").getAttribute("myCustomAttrib");
 var map = {};
-var context = dm + "dev/"+myCurrentReq+"/";
-var contextCommon = dm + "dev/common/";
+var context = dm + myCurrentReq +"/";
+var contextCommon = dm + "common/";
 var category=myCurrentReq.charAt(0).toUpperCase()
 var typeName = category + myCurrentReq.substr(1);
 var fetchMethod="getAll"+typeName+"Products";
@@ -315,6 +315,7 @@ function closePopup(){
 }
 
 function closeAndFeedback(){
+	closePopup();
 	location.href=$("#feedbackId").attr('href');
 }
 
@@ -818,7 +819,12 @@ $("#ordersection").hide();
 						deliveryKey = $(response).attr('orderStatus');
 						orderTwo = orderOne;
 					}
-					var orderInfo = '<ul id="progressbar" class="text-center"><li class="'+orderOne+' step0"></li><li class="'+orderOne+' step0"></li><li class="'+orderTwo+' step0"></li><li class="'+orderTwo+' step0"></li></ul>';
+					var shipOrderClassicon = '';
+					if($(response).attr('orderStatus') != 'In-Progress' || $(response).attr('orderStatus') != 'Delivered'){
+						$(".shippedOrderClass").hide();
+						shipOrderClassicon = '<li class="'+orderTwo+' step0"></li>';
+					}					
+					var orderInfo = '<ul id="progressbar" class="text-center"><li class="'+orderOne+' step0"></li><li class="'+orderOne+' step0"></li>'+shipOrderClassicon+'<li class="'+orderTwo+' step0"></li></ul>';
 					$("#orderInfo").html(orderInfo);
 					$("#orderStatusName").html(deliveryKey);
 					
@@ -828,8 +834,8 @@ $("#ordersection").hide();
 					str = str + '<p> Delivery person will contact you on mobile no '+$($(response).attr('user')).attr('mobileNo')+', or email id '+$($(response).attr('user')).attr('emailid')+'. </p>';
 					str = str + '<p> Delivery address is '+$($(response).attr('user')).attr('address')+'. </p>';
 					str = str + '<br><p><b>Below are order details</b></p>';
-				var imgStr = $(response).attr('clientIp')+"/images/product-";
-				 str= str +"<table class='table-striped table-bordered table-hover'>";
+					var imgStr = $(response).attr('clientIp')+"/images/product-";
+					str= str +"<table class='table-striped table-bordered table-hover'>";
 					$($($(response).attr('orderDetailsList'))).each(function(i,response){
 						str= str +"<tr><td style='padding:10px'><img style='height:150px;width:150px' src="+imgStr+$(response).attr('productId')+".jpg></td><td style='padding:10px'>"+$(response).attr('description')+"</td></tr>";
 					});
@@ -844,7 +850,6 @@ $("#ordersection").hide();
 					}
 
 			});
-		
  }	
  
 function refreshMaster(){
