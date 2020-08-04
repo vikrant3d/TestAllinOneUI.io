@@ -669,8 +669,8 @@ function updateRow(i){
 			alert("Please enter valid Product Description record Status.\n Status can be of Below combination \n Y - Available \n D - Hide Product");
 			validResult =  false;
 		}
-		if($(".stockCount"+i).eq(j).val() == "" || $(".stockCount"+i).eq(j).val() < -1 || $(".stockCount"+i).eq(j).val() == 0){
-			alert("Please enter valid Stock Count \n Stock Count has below combination \n -1 : Items has infinity count \n 0 : Item cannot have 0 count \n Any Other Positive have can be accepted.");
+		if($(".stockCount"+i).eq(j).val() == "" || $(".stockCount"+i).eq(j).val() < -1 || ($(".stockCount"+i).eq(j).val() == 0 && $(".stockStatus"+i).eq(j).val() != "D")){
+			alert("Please enter valid Stock Count \n Stock Count has below combination \n -1 : Items has infinity count \n 0 : Item only has 0 count, If Status id D \n Any Other Positive have can be accepted.");
 			validResult =  false;
 		}
 		
@@ -879,7 +879,7 @@ $("#ordersection").hide();
 					$("#orderStatusName").html(deliveryKey);
 					
 					var ordStatusComm = "";
-					if($(response).attr('orderStatusComment') != null || $(response).attr('orderStatusComment') != ""){
+					if($(response).attr('orderStatusComment') != null && $(response).attr('orderStatusComment') != ""){
 						ordStatusComm = ", With Comment <b>" + $(response).attr('orderStatusComment') + "</b>";
 					}
 					
