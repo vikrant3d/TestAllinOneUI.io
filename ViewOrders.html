@@ -39,7 +39,10 @@
 		margin-top: 30px;
 		margin-bottom: 30px;
 		border-radius: 10px
-	}
+	}	
+	.flex-column {	 
+	  flex-direction: inherit !important;
+	 }
 	</style>
 
   </head>
@@ -82,13 +85,13 @@
 
 <div class="container mx-auto" id="ordersection">
     <div class="card">
-        <div class="row d-flex justify-content-between px-3 top">
+        <div class="row d-flex justify-content-between top">
             <div class="d-flex">                
-				 <p><span class="font-weight-bold">&nbsp;&nbsp;Track Your Order&nbsp;&nbsp;</span></p>
+				 <p><span class="font-weight-bold">&nbsp;&nbsp;Track Your Order&nbsp;&nbsp;</span></p>				 
             </div>
             <div class="d-flex flex-column text-sm-right">  
-				<a href="" value="Feedback for Order" id="feedbackForOrder" class="btn btn-primary py-3 px-5" >Feedback for Order</a>&nbsp;&nbsp;			
-               
+				<a href="" id="feedbackForOrder" class="btn btn-primary py-2 px-2" >Feedback for Order</a>&nbsp;&nbsp;			
+				<a href="javascript:void(0)" style="display:none;" onclick="return showCancelPopup(this);" id="cancelOrder" class="btn btn-primary py-2 px-2" >Cancel Order</a>&nbsp;&nbsp;			
             </div>
         </div> <!-- Add class 'active' to progress -->
         <div class="row d-flex justify-content-center">
@@ -96,25 +99,51 @@
             </div>
         </div>
         <div class="row justify-content-between top">
-            <div class="row d-flex icon-content"> <img class="icon" src="https://i.imgur.com/9nnc9Et.png">
-                <div class="d-flex flex-column" style="margin-top:18px">
-                    <p class="font-weight-bold">Order<br>Placed</p>
-                </div>
+            <div class="row d-flex icon-content widthIcons"> 
+				<div class="col-md-4">
+					<img class="icon" src="https://i.imgur.com/9nnc9Et.png">
+				</div>
+				<div class="col-md-6">
+					<div class="d-flex flex-column" style="margin-top:18px">
+						<p class="font-weight-bold">Order<br>Placed</p>
+					</div>	
+				</div>
+				<div class="col-md-12">
+					<div id="orderDateId" class="font-weight-bold"></div>
+				</div>
             </div>
-            <div class="row d-flex icon-content"> <img class="icon" src="https://i.imgur.com/u1AzR7w.png">
-                <div class="d-flex flex-column" style="margin-top:18px">
-                    <p class="font-weight-bold">Order<br>In-Progress</p>
-                </div>
+            <div class="row d-flex icon-content widthIcons"> 
+				<div class="col-md-4">
+					<img class="icon" src="https://i.imgur.com/u1AzR7w.png">
+				</div>
+				<div class="col-md-6">
+					<div class="d-flex flex-column" style="margin-top:18px">
+						<p class="font-weight-bold">Order<br>In-Progress</p>
+					</div>
+				</div>
             </div>
-            <div class="row d-flex icon-content shippedOrderClass" > <img class="icon" src="https://i.imgur.com/TkPm63y.png">
-                <div class="d-flex flex-column" style="margin-top:18px">
-                    <p class="font-weight-bold">Order<br>Shipped</p>
-                </div>
+            <div class="row d-flex icon-content shippedOrderClass"> 
+				<div class="col-md-5">
+					<img class="icon" src="https://i.imgur.com/TkPm63y.png">
+				</div>
+				<div class="col-md-6">
+					<div class="d-flex flex-column" style="margin-top:18px">
+						<p class="font-weight-bold">Order<br>Shipped</p>
+					</div>
+				</div>
             </div>
-            <div class="row d-flex icon-content"> <img class="icon" src="https://i.imgur.com/HdsziHP.png">
-                <div class="d-flex flex-column" style="margin-top:18px">
-                    <p class="font-weight-bold" id="orderStatusName"></p>
-                </div>
+            <div class="row d-flex icon-content widthIcons"> 
+				<div class="col-md-4">
+					<img class="icon" src="https://i.imgur.com/HdsziHP.png">
+				</div>
+				<div class="col-md-6">
+					<div class="d-flex flex-column" style="margin-top:18px">
+						<p class="font-weight-bold" id="orderStatusName"></p>
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div id="orderFinalDateId" class="font-weight-bold"></div>
+				</div>
             </div>
         </div>
     </div>
@@ -141,6 +170,32 @@
       <div class="modal-body">
         <h6>Please wait your data is been progress. </h6>
       </div>
+    </div>
+  </div>
+  </div>
+  
+    <div class="modal fade" id="cancelOrderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Order Cancel Confirmation</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+			<div class="form-group name1 col-md-12">
+				<span id="errorMsgid" style="color: red;display:none;">Please enter valid comments to cancel your order.<br></span>
+				<label for="exampleInputEmail1" class="formText">Your Comment:</label>
+				<input type="text" class="form-control" id="cancelOrderComm" name="cancelOrderComm" maxlength="500">
+			</div>
+		</div>
+      </div>
+	  <div class="modal-footer">
+			<button type="button" class="btn btn-primary" id="cancelOrderButton" onClick="return updateCancelstatus(this)">Confirm</button>
+			<button type="button" class="btn btn-primary" id="closeButton" onClick="return closeCancelOrderPopup()">Close</button>
+	  </div>
     </div>
   </div>
   </div>

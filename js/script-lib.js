@@ -156,7 +156,6 @@ function initCart(){
 }
 
 function displayCardDetails(){
-
 	var style="";
 	if(category == 'A'){
 		style="display:none";
@@ -361,8 +360,8 @@ function placeOrder(){
 			$("#mobileNo").focus()
 			return false;
 		   	}
-		 if($("#emailid").val() == '' ){
-			$("#alertMsg").html("Please enter emailid.");
+		 if(checkValidEmailID($("#emailid").val())){
+			$("#alertMsg").html("Please enter valid Email ID.");
 			$("#alertModal").modal('show');
 			$("#emailid").focus()
 			return false;
@@ -371,6 +370,14 @@ function placeOrder(){
 	$("#orderConfirmationContent").html("Are you sure you want to place order?");
 	$("#lodaingModal").modal('show');
 	saveCardDetails();	
+}
+
+function checkValidEmailID(val){
+	var result = true;
+	if(val.indexOf("@") != -1 && val.indexOf(".") != -1){
+		result = false;
+	}
+	return result;
 }
 
 function confirmPayment(){	
@@ -770,15 +777,43 @@ function viewOrderDetails(obj,count){
 function updatestatus(obj,count){
 	$(obj).attr('disabled',true);
 	$(obj).attr('value','Please wait ...');
-	var data={};
-	data["category"]=category;
+	var data={};	
 	data["password"]=$("#password").val();
 	data["masterid"]=$(obj).attr('data-id');
-	data["status"]=$("#statusddval"+count).val();
-	data["name"]=$(obj).attr('data-name');
-	data["emailid"]=$(obj).attr('data-emailid');
+	data["status"]=$("#statusddval"+count).val();	
+	data["orderStatusComment"]="";
 	updateTables(JSON.stringify(data),"updateOrderStatus","initOrderDetails");
 }	
+
+function showCancelPopup(obj){
+	$("#cancelOrderModal").modal('show');
+	$("#cancelOrderComm").focus();
+	$("#cancelOrderButton").prop('disabled',false);
+}
+function updateCancelstatus(obj){
+	$("#errorMsgid").hide();
+	if($("#cancelOrderComm").val().length < 10){
+		$("#errorMsgid").show();
+		return false;
+	}else{	
+		$(obj).attr('disabled',true);
+		$(obj).attr('value','Please wait ...');
+		var data={};	
+		data["masterid"]=$(obj).attr('data-id');	
+		data["orderStatusComment"]=$("#cancelOrderComm").val();
+		updateTables(JSON.stringify(data),"custUpdateOrderStatus","refreshViewOrderPage");	
+	}
+}
+function refreshViewOrderPage(){	
+	if(window.location.search != ''){
+		location.reload();
+	}else{
+		location.href = location.href +"?"+$("#cancelOrderButton").attr('data-orderid');
+	}
+}
+function closeCancelOrderPopup(){
+	$("#cancelOrderModal").modal('hide');
+}
 
 function updateTables(data,method,call){
 	$.ajax({
@@ -807,6 +842,11 @@ $("#ordersection").hide();
 			  success: function (response) { 
 					var feedBackLink = $(response).attr('catagory')+"#Order ID: "+$(response).attr('orderid')+" Name: "+$($(response).attr('user')).attr('userName') + " #Mobile No: "+$($(response).attr('user')).attr('mobileNo')+ " Email ID: "+$($(response).attr('user')).attr('emailid');
 					$("#feedbackForOrder").attr('href','ContactForm.html?'+btoa(feedBackLink));
+					$("#cancelOrderButton").attr('data-id',$(response).attr('id'));
+					$("#cancelOrderButton").attr('data-orderid',$(response).attr('orderid'));
+					if($(response).attr('orderStatus') == 'In-Progress'){
+						$("#cancelOrder").show();
+					}
 					var str = "";
 					var coupanStr="";
 					if($(response).attr('coupanCode') != null){
@@ -819,17 +859,32 @@ $("#ordersection").hide();
 						deliveryKey = $(response).attr('orderStatus');
 						orderTwo = orderOne;
 					}
-					var shipOrderClassicon = '';
-					if($(response).attr('orderStatus') != 'In-Progress' || $(response).attr('orderStatus') != 'Delivered'){
-						$(".shippedOrderClass").hide();
-						shipOrderClassicon = '<li class="'+orderTwo+' step0"></li>';
-					}					
-					var orderInfo = '<ul id="progressbar" class="text-center"><li class="'+orderOne+' step0"></li><li class="'+orderOne+' step0"></li>'+shipOrderClassicon+'<li class="'+orderTwo+' step0"></li></ul>';
+					$("#orderDateId").html($(response).attr('datetime'));
+					$("#orderFinalDateId").html('');
+					$(".widthIcons").attr('style','width:25%');
+					$(".shippedOrderClass").attr('style','width:25%');
+					var widthThreeSec="width:25%";
+					var shipOrderClassicon = '<li style="'+widthThreeSec+'" class="'+orderTwo+' step0"></li>';
+					if($(response).attr('orderStatus') != 'In-Progress' && $(response).attr('orderStatus') != 'Delivered'){
+						$(".shippedOrderClass").attr('style','display:none !important;width:33%');
+						shipOrderClassicon = '';
+						widthThreeSec = "width:33%";
+						$(".widthIcons").attr('style','width:33%');
+					}
+					if($(response).attr('orderStatus') != 'In-Progress'){
+						$("#orderFinalDateId").html($(response).attr('orderStatusDate'));
+					}
+					var orderInfo = '<ul id="progressbar" class="text-center"><li style="'+widthThreeSec+'" class="'+orderOne+' step0"></li><li style="'+widthThreeSec+'" class="'+orderOne+' step0"></li>'+shipOrderClassicon+'<li style="'+widthThreeSec+'" class="'+orderTwo+' step0"></li></ul>';
 					$("#orderInfo").html(orderInfo);
 					$("#orderStatusName").html(deliveryKey);
 					
+					var ordStatusComm = "";
+					if($(response).attr('orderStatusComment') != null || $(response).attr('orderStatusComment') != ""){
+						ordStatusComm = ", With Comment <b>" + $(response).attr('orderStatusComment') + "</b>";
+					}
+					
 					$("#orderHeader").html('Thank you '+ $($(response).attr('user')).attr('userName') + ' for placing order.')
-					str = str + '<p> Your order was placed on '+$(response).attr('datetime')+'. Order status is <b>'+$(response).attr('orderStatus')+'</b>. </p>';
+					str = str + '<p> Your order was placed on '+$(response).attr('datetime')+'. Order status is <b>'+$(response).attr('orderStatus')+'</b> '+ordStatusComm+'. </p>';
 					str = str + '<p> Total Amount was  '+$(response).attr('finalPrice')+' Rs, Discount was '+$(response).attr('discount')+' Rs, Delivery charges was '+$(response).attr('deliveryCharge')+' Rs'+coupanStr+'. </p>';
 					str = str + '<p> Delivery person will contact you on mobile no '+$($(response).attr('user')).attr('mobileNo')+', or email id '+$($(response).attr('user')).attr('emailid')+'. </p>';
 					str = str + '<p> Delivery address is '+$($(response).attr('user')).attr('address')+'. </p>';
@@ -941,24 +996,27 @@ function submitFeedBack(obj){
 		}
 	} 
 	
-	function submitNewBusinessDetails(obj){
-		
+	function submitNewBusinessDetails(obj){		
 		if($("#Name").val() == '' ){
 			   alert('Please enter your Name.');
 			   $("#Name").focus()
 			   return false;
 		   	}
-			 if($("#phoneNO").val() == '' ){
-			   alert('Please enter Mobile Number.');
+			 if($("#phoneNO").val() == '' || $("#phoneNO").val().length != 10){
+			   alert('Please enter valid Mobile Number.');
 			 $("#phoneNO").focus()
 			   return false;
-		   	}
-			 if($("#message").val() == '' ){
+		   	}			
+			if(checkValidEmailID($("#email").val())){
+	 		   alert('Please enter valid Email ID.');
+	 		   $("#email").focus()
+	 		   return false;
+			}	
+			if($("#message").val() == '' ){
 	 		   alert('Please enter Message.');
 	 		   $("#message").focus()
 	 		   return false;
-	 	   }
-		initLData();	 
+			}			
     var r = confirm("Are you sure you want to Sign up now for Online Business?");
 		if (r == true) {
 			$(obj).attr('disabled',true);
