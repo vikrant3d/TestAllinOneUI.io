@@ -1413,3 +1413,102 @@ function coupanTypeChange(obj,count){
 		$(obj).parent().parent().find('td').eq(3).find('.component'+count).hide();
 	}
 }
+function viewOrderHistory(obj){
+	$("#errorId").html("");
+	var mobile = $("#mobileNo").val().trim();
+	if(mobile == "" || mobile.length != 10){
+		$("#errorId").html("Please enter valid Mobile No");
+		return false;
+	}	
+	$(obj).attr('disabled',true);
+	$(obj).attr('value','Please wait ...');	
+
+	$.ajax({
+	  type: 'POST',
+	  url: context + "checkValidMobileNo",
+	  data : '{"mobileNo":"'+mobile+'"}',
+	  success: function (response) {
+			$(obj).attr('disabled',false);
+			$(obj).attr('value','View Order History');			  
+			if(response != "Y"){
+				$("#errorId").html(response);
+			}else{
+				$("#OTPModal").modal('show').on('shown.bs.modal', function() {
+					$('#OTPConfirmID').trigger('focus');
+				  });				
+				$("#OTPlabel").html("Enter OTP send to "+ mobile + " Mobile Number.")
+			}
+		},
+	  error : function (response) { 				
+				alert("Something went wrong");
+			}
+	});	
+}
+function closeMyOrderPopUp(){
+	$("#OTPModal").modal('hide');
+}
+function verifyOTP(obj){
+	$("#errorMsgid").hide();
+	var mobile = $("#mobileNo").val().trim();
+	var OTPConfirmID = $("#OTPConfirmID").val().trim();
+	if(OTPConfirmID == "" || OTPConfirmID.length != 4){
+		$("#errorMsgid").show();
+		return false;
+	}	
+	$(obj).attr('disabled',true);
+	$(obj).attr('value','Please wait ...');	
+
+	$.ajax({
+	  type: 'POST',
+	  url: context + "orderDetailsByMobileNo",
+	  data : '{"mobileNo":"'+mobile+'","otp":"'+OTPConfirmID+'"}',
+	  success: function (response) {
+			$("#OTPModal").modal('hide');		  
+			prepareOrderHistoryList(response);
+		},
+	  error : function (response) { 
+				$("#errorMsgid").show();
+				$(obj).attr('disabled',false);
+				$(obj).attr('value','Confirm OTP');	
+			}
+	});	
+}
+function prepareOrderHistoryList(response1){
+	
+	$("#orderDetails").html("");
+	var str ="";
+	var lastDate = "";
+	var count =1;
+	var detailsmsg = "";
+	$(response1).each(function(i,response){
+		var selectdd ="";
+		
+		var additionalInfo = "";
+		if($(response).attr('additionalNote') != null && $(response).attr('additionalNote') != "\"\""){
+			additionalInfo = ", <b>Additional Info:</b>"+$(response).attr('additionalNote');
+		}
+		var details="<ol>";
+		$($($(response).attr('orderDetailsList'))).each(function(i,response){
+			details = details +"<li>"+$(response).attr('description')+"</li>";
+		});
+		if(lastDate != $(response).attr('datetime').substr(0,10)){
+			str = str.replace("#runtime#",detailsmsg);
+			detailsmsg = "";
+			
+			detailsmsg = detailsmsg + '<p>'+count +'.<input type="hidden" value="'+details+'" id="datadesc'+count+'" /> <input type="button" data-id='+$(response).attr('id')+'  class="btn btn-primary"  onClick="return viewOrderDetails(this,'+count+')" value="OrderDetails" /> OrderId <b>'+$(response).attr('orderid')+'</b> placed by <b>'+$($(response).attr('user')).attr('userName')+'</b> using Mobile No. <b>'+$($(response).attr('user')).attr('mobileNo')+'</b> with Total amount <b>'+ $(response).attr('finalPrice')+' Rs. Address Details :</b> '+ $($(response).attr('user')).attr('address')+additionalInfo+'. having order status <b>'+$(response).attr('orderStatus')+'</b>.'+selectdd;
+			str = str +  '<div class="col-sm-12"><div class="cart-wrap ftco-animate fadeInUp ftco-animated"><div class="cart-total mb-3"><h3>'+$(response).attr('datetime').substr(0,10)+'</h3><div id="detailssub">#runtime#</div></div></div></div>';
+		
+			lastDate = $(response).attr('datetime').substr(0,10);
+			
+		}else{
+			detailsmsg = detailsmsg + '<p>'+count +'.<input type="hidden" value="'+details+'" id="datadesc'+count+'" /> <input type="button" data-id='+$(response).attr('id')+'  class="btn btn-primary"  onClick="return viewOrderDetails(this,'+count+')" value="OrderDetails" /> OrderId <b>'+$(response).attr('orderid')+'</b> placed by <b>'+$($(response).attr('user')).attr('userName')+'</b> using Mobile No. <b>'+$($(response).attr('user')).attr('mobileNo')+'</b> with Total amount <b>'+ $(response).attr('finalPrice')+' Rs. Address Details :</b> '+ $($(response).attr('user')).attr('address')+additionalInfo+'. having order status <b>'+$(response).attr('orderStatus')+'</b>.'+selectdd;
+				
+		}
+	
+	count++;
+	});
+	str = str.replace("#runtime#",detailsmsg);
+	
+	$("#orderDetails").append(str);
+	
+}

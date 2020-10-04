@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>UlweAllinOne</title>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="img/logo.gif" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Amatic+SC:400,700&display=swap" rel="stylesheet">
+
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet"> 
+    
+    <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css">
+    <link rel="stylesheet" href="css/animate.css">
+    
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+
+    <link rel="stylesheet" href="css/aos.css">
+
+    <link rel="stylesheet" href="css/ionicons.min.css">
+
+    <link rel="stylesheet" href="css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="css/jquery.timepicker.css">
+	
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/flaticon.css">
+    <link rel="stylesheet" href="css/icomoon.css">
+    <link rel="stylesheet" href="css/style.css">
+	<style>
+	.card {
+		z-index: 0;
+		background-color: #ECEFF1;
+		padding-bottom: 20px;
+		margin-top: 30px;
+		margin-bottom: 30px;
+		border-radius: 10px
+	}	
+	.flex-column {	 
+	  flex-direction: inherit !important;
+	 }
+	</style>
+
+  </head>
+  <body class="goto-here">
+		<div class="py-1 bg-primary" id="parentTopHeaderSection"></div>
+    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+	    <div class="container">
+	      <a class="navbar-brand" href="index.html">UlweAllinOne</a>
+	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+	        <span class="oi oi-menu"></span> Menu
+	      </button>
+
+	      <div class="collapse navbar-collapse" id="ftco-nav">
+	        <ul class="navbar-nav ml-auto">
+	          <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+	          <li class="nav-item active"><a href="ViewOrders.html" class="nav-link">View Orders</a></li>
+	          
+	        </ul>
+	      </div>
+	    </div>
+	  </nav>
+    <!-- END nav -->
+ <div class="container"> 
+<div class="row">
+	<div class="col-lg-4 mt-5 cart-wrap ftco-animate">
+	 			<div class="cart-total mb-3">
+	 					<h3>View Order History</h3>
+	 					<p>Enter your Mobile Number</p>
+						<p style="color:red" id="errorId"></p>
+						
+	            <div class="form-group">
+	              	<!-- <label for="">View Order details</label> -->
+	                <input id="mobileNo" type="number" class="form-control text-left px-3"  placeholder="" autofocus maxlength=10>
+	            </div>
+	            <input type="button" value="View Order History"  onclick="return viewOrderHistory(this)" class="btn btn-primary py-3 px-5">
+	            </div>
+	</div>
+</div>
+</div>
+	 <div class="container"> 
+		<div class="row">
+				<div id="orderDetails"></div>
+		</div>
+	</div>
+
+
+</div>
+   <br><br><br>
+  
+  
+    <div class="modal fade" id="OTPModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel">One Time Password (OTP) Confirmation</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<div class="row">
+				<div class="form-group name1 col-md-12">
+					<span id="errorMsgid" style="color: red;display:none;">Please Enter Valid OTP.<br></span>
+					<label for="exampleInputEmail1" id="OTPlabel" class="formText"></label>
+					<input type="number" class="form-control" id="OTPConfirmID" name="cancelOrderComm" maxlength="4">
+				</div>
+			</div>
+		  </div>
+		  <div class="modal-footer">
+				<input type="button" class="btn btn-primary" id="cancelOrderButton" value="Confirm OTP" onClick="return verifyOTP(this)" />
+				<input type="button" class="btn btn-primary" id="closeButton" value="Close" onClick="return closeMyOrderPopUp()" />
+		  </div>
+		</div>
+	  </div>
+  </div>
+  <div class="modal fade" id="lodaingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel">Below are Order Details</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<h6>Please wait your data is been progress. </h6>
+		  </div>
+		</div>
+	  </div>
+  </div>  
+  
+
+   <div id="deliverysection"></div>		
+   <div id="footersection"></div> 
+ 
+  <script src="js/jquery.min.js"></script>
+  <script src="js/jquery-migrate-3.0.1.min.js"></script>
+   <script id="myConfigLib" myCustomAttrib="P"  src="js/config.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/jquery.waypoints.min.js"></script>
+  <script src="js/jquery.stellar.min.js"></script>
+  <script src="js/owl.carousel.min.js"></script>
+  <script src="js/jquery.magnific-popup.min.js"></script>
+  <script src="js/aos.js"></script>
+  <script src="js/scrollax.min.js"></script>
+  <script src="js/main.js"></script>
+<script id="myscriptLib" myCustomAttrib="common"  src="js/script-lib.js"></script>
+   <script type="text/javascript">
+	$("#mobileNo").focus();
+	
+ </script>
+   
+  </body>
+</html>
