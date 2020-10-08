@@ -833,78 +833,82 @@ function updateTables(data,method,call){
 
 }	
 function submitViewOrder(){
-$("#ordersection").hide();
+	$("#ordersection").hide();
+	$("#viewOrderId").attr('disabled',true);
+	$("#viewOrderId").attr('value','Please wait ...');	
+	$("#errorId").html("");
+	 $.ajax({
+	  type: 'POST',
+	  url: contextCommon + "findOrder",
+	  data : '{"orderid":"'+$("#Orderid").val()+'"}',
+	  success: function (response) { 
+			$("#viewOrderId").attr('disabled',false);
+			$("#viewOrderId").attr('value','View Orders');
+			var feedBackLink = $(response).attr('catagory')+"#Order ID: "+$(response).attr('orderid')+" Name: "+$($(response).attr('user')).attr('userName') + " #Mobile No: "+$($(response).attr('user')).attr('mobileNo')+ " Email ID: "+$($(response).attr('user')).attr('emailid');
+			$("#feedbackForOrder").attr('href','ContactForm.html?'+btoa(feedBackLink));
+			$("#cancelOrderButton").attr('data-id',$(response).attr('id'));
+			$("#cancelOrderButton").attr('data-orderid',$(response).attr('orderid'));
+			if($(response).attr('orderStatus') == 'In-Progress'){
+				$("#cancelOrder").show();
+			}
+			var str = "";
+			var coupanStr="";
+			if($(response).attr('coupanCode') != null){
+				 coupanStr= ', Coupon Used '+$(response).attr('coupanCode');
+			}
+			var orderOne = 'active';
+			var orderTwo = '';
+			var deliveryKey = 'Delivered';
+			if($(response).attr('orderStatus') != 'In-Progress'){
+				deliveryKey = $(response).attr('orderStatus');
+				orderTwo = orderOne;
+			}
+			$("#orderDateId").html($(response).attr('datetime'));
+			$("#orderFinalDateId").html('');
+			$(".widthIcons").attr('style','width:25%');
+			$(".shippedOrderClass").attr('style','width:25%');
+			var widthThreeSec="width:25%";
+			var shipOrderClassicon = '<li style="'+widthThreeSec+'" class="'+orderTwo+' step0"></li>';
+			if($(response).attr('orderStatus') != 'In-Progress' && $(response).attr('orderStatus') != 'Delivered'){
+				$(".shippedOrderClass").attr('style','display:none !important;width:33%');
+				shipOrderClassicon = '';
+				widthThreeSec = "width:33%";
+				$(".widthIcons").attr('style','width:33%');
+			}
+			if($(response).attr('orderStatus') != 'In-Progress'){
+				$("#orderFinalDateId").html($(response).attr('orderStatusDate'));
+			}
+			var orderInfo = '<ul id="progressbar" class="text-center"><li style="'+widthThreeSec+'" class="'+orderOne+' step0"></li><li style="'+widthThreeSec+'" class="'+orderOne+' step0"></li>'+shipOrderClassicon+'<li style="'+widthThreeSec+'" class="'+orderTwo+' step0"></li></ul>';
+			$("#orderInfo").html(orderInfo);
+			$("#orderStatusName").html(deliveryKey);
 			
-			 $.ajax({
-			  type: 'POST',
-			  url: contextCommon + "findOrder",
-			  data : '{"orderid":"'+$("#Orderid").val()+'"}',
-			  success: function (response) { 
-					var feedBackLink = $(response).attr('catagory')+"#Order ID: "+$(response).attr('orderid')+" Name: "+$($(response).attr('user')).attr('userName') + " #Mobile No: "+$($(response).attr('user')).attr('mobileNo')+ " Email ID: "+$($(response).attr('user')).attr('emailid');
-					$("#feedbackForOrder").attr('href','ContactForm.html?'+btoa(feedBackLink));
-					$("#cancelOrderButton").attr('data-id',$(response).attr('id'));
-					$("#cancelOrderButton").attr('data-orderid',$(response).attr('orderid'));
-					if($(response).attr('orderStatus') == 'In-Progress'){
-						$("#cancelOrder").show();
-					}
-					var str = "";
-					var coupanStr="";
-					if($(response).attr('coupanCode') != null){
-						 coupanStr= ', Coupon Used '+$(response).attr('coupanCode');
-					}
-					var orderOne = 'active';
-					var orderTwo = '';
-					var deliveryKey = 'Delivered';
-					if($(response).attr('orderStatus') != 'In-Progress'){
-						deliveryKey = $(response).attr('orderStatus');
-						orderTwo = orderOne;
-					}
-					$("#orderDateId").html($(response).attr('datetime'));
-					$("#orderFinalDateId").html('');
-					$(".widthIcons").attr('style','width:25%');
-					$(".shippedOrderClass").attr('style','width:25%');
-					var widthThreeSec="width:25%";
-					var shipOrderClassicon = '<li style="'+widthThreeSec+'" class="'+orderTwo+' step0"></li>';
-					if($(response).attr('orderStatus') != 'In-Progress' && $(response).attr('orderStatus') != 'Delivered'){
-						$(".shippedOrderClass").attr('style','display:none !important;width:33%');
-						shipOrderClassicon = '';
-						widthThreeSec = "width:33%";
-						$(".widthIcons").attr('style','width:33%');
-					}
-					if($(response).attr('orderStatus') != 'In-Progress'){
-						$("#orderFinalDateId").html($(response).attr('orderStatusDate'));
-					}
-					var orderInfo = '<ul id="progressbar" class="text-center"><li style="'+widthThreeSec+'" class="'+orderOne+' step0"></li><li style="'+widthThreeSec+'" class="'+orderOne+' step0"></li>'+shipOrderClassicon+'<li style="'+widthThreeSec+'" class="'+orderTwo+' step0"></li></ul>';
-					$("#orderInfo").html(orderInfo);
-					$("#orderStatusName").html(deliveryKey);
-					
-					var ordStatusComm = "";
-					if($(response).attr('orderStatusComment') != null && $(response).attr('orderStatusComment') != ""){
-						ordStatusComm = ", With Comment <b>" + $(response).attr('orderStatusComment') + "</b>";
-					}
-					
-					$("#orderHeader").html('Thank you '+ $($(response).attr('user')).attr('userName') + ' for placing order.')
-					str = str + '<p> Your order was placed on '+$(response).attr('datetime')+'. Order status is <b>'+$(response).attr('orderStatus')+'</b> '+ordStatusComm+'. </p>';
-					str = str + '<p> Total Amount was  '+$(response).attr('finalPrice')+' Rs, Discount was '+$(response).attr('discount')+' Rs, Delivery charges was '+$(response).attr('deliveryCharge')+' Rs'+coupanStr+'. </p>';
-					str = str + '<p> Delivery person will contact you on mobile no '+$($(response).attr('user')).attr('mobileNo')+', or email id '+$($(response).attr('user')).attr('emailid')+'. </p>';
-					str = str + '<p> Delivery address is '+$($(response).attr('user')).attr('address')+'. </p>';
-					str = str + '<br><p><b>Below are order details</b></p>';
-					var imgStr = $(response).attr('clientIp')+"/images/product-";
-					str= str +"<table class='table-striped table-bordered table-hover'>";
-					$($($(response).attr('orderDetailsList'))).each(function(i,response){
-						str= str +"<tr><td style='padding:10px'><img style='height:150px;width:150px' src="+imgStr+$(response).attr('productId')+".jpg></td><td style='padding:10px'>"+$(response).attr('description')+"</td></tr>";
-					});
-				str= str + "</table></br>"
-				$("#detailssub").html(str);
-				$("#ordersection").show();
-				category = $($(response).attr('master')).attr('catagory');
-				},
-			  error : function (response) { 						
-					
-					alert("Please enter valid Order ID. Order ID is send to you via email and SMS.");
-					}
-
+			var ordStatusComm = "";
+			if($(response).attr('orderStatusComment') != null && $(response).attr('orderStatusComment') != ""){
+				ordStatusComm = ", With Comment <b>" + $(response).attr('orderStatusComment') + "</b>";
+			}
+			
+			$("#orderHeader").html('Thank you '+ $($(response).attr('user')).attr('userName') + ' for placing order.')
+			str = str + '<p> Your order was placed on '+$(response).attr('datetime')+'. Order status is <b>'+$(response).attr('orderStatus')+'</b> '+ordStatusComm+'. </p>';
+			str = str + '<p> Total Amount was  '+$(response).attr('finalPrice')+' Rs, Discount was '+$(response).attr('discount')+' Rs, Delivery charges was '+$(response).attr('deliveryCharge')+' Rs'+coupanStr+'. </p>';
+			str = str + '<p> Delivery person will contact you on mobile no '+$($(response).attr('user')).attr('mobileNo')+', or email id '+$($(response).attr('user')).attr('emailid')+'. </p>';
+			str = str + '<p> Delivery address is '+$($(response).attr('user')).attr('address')+'. </p>';
+			str = str + '<br><p><b>Below are order details</b></p>';
+			var imgStr = $(response).attr('clientIp')+"/images/product-";
+			str= str +"<table class='table-striped table-bordered table-hover'>";
+			$($($(response).attr('orderDetailsList'))).each(function(i,response){
+				str= str +"<tr><td style='padding:10px'><img style='height:150px;width:150px' src="+imgStr+$(response).attr('productId')+".jpg></td><td style='padding:10px'>"+$(response).attr('description')+"</td></tr>";
 			});
+		str= str + "</table></br>"
+		$("#detailssub").html(str);
+		$("#ordersection").show();
+		category = $($(response).attr('master')).attr('catagory');
+		},
+	  error : function (response) { 
+			$("#viewOrderId").attr('disabled',false);
+			$("#viewOrderId").attr('value','View Orders');	
+			$("#errorId").html("Please enter valid Order ID. Order ID is send to you via email and SMS.");
+			}
+	});
  }	
  
 function refreshMaster(){
@@ -1433,9 +1437,11 @@ function viewOrderHistory(obj){
 			if(response != "Y"){
 				$("#errorId").html(response);
 			}else{
+				$("#OTPConfirmID").val('');
 				$("#OTPModal").modal('show').on('shown.bs.modal', function() {
 					$('#OTPConfirmID').trigger('focus');
-				  });				
+				  });	
+				  
 				$("#OTPlabel").html("Enter OTP send to "+ mobile + " Mobile Number.")
 			}
 		},
@@ -1463,7 +1469,9 @@ function verifyOTP(obj){
 	  url: context + "orderDetailsByMobileNo",
 	  data : '{"mobileNo":"'+mobile+'","otp":"'+OTPConfirmID+'"}',
 	  success: function (response) {
-			$("#OTPModal").modal('hide');		  
+			$("#OTPModal").modal('hide');	
+			$(obj).attr('disabled',false);
+			$(obj).attr('value','Confirm OTP');				
 			prepareOrderHistoryList(response);
 		},
 	  error : function (response) { 
@@ -1474,14 +1482,14 @@ function verifyOTP(obj){
 	});	
 }
 function prepareOrderHistoryList(response1){
-	
+	$("#orderHistoryLogo").hide();
 	$("#orderDetails").html("");
 	var str ="";
 	var lastDate = "";
 	var count =1;
 	var detailsmsg = "";
 	$(response1).each(function(i,response){
-		var selectdd ="";
+		var selectdd =' For more Order information <a target="_blank" href="ViewOrders.html?'+$(response).attr('orderid')+'" >Click here</a>.';
 		
 		var additionalInfo = "";
 		if($(response).attr('additionalNote') != null && $(response).attr('additionalNote') != "\"\""){
@@ -1495,13 +1503,13 @@ function prepareOrderHistoryList(response1){
 			str = str.replace("#runtime#",detailsmsg);
 			detailsmsg = "";
 			
-			detailsmsg = detailsmsg + '<p>'+count +'.<input type="hidden" value="'+details+'" id="datadesc'+count+'" /> <input type="button" data-id='+$(response).attr('id')+'  class="btn btn-primary"  onClick="return viewOrderDetails(this,'+count+')" value="OrderDetails" /> OrderId <b>'+$(response).attr('orderid')+'</b> placed by <b>'+$($(response).attr('user')).attr('userName')+'</b> using Mobile No. <b>'+$($(response).attr('user')).attr('mobileNo')+'</b> with Total amount <b>'+ $(response).attr('finalPrice')+' Rs. Address Details :</b> '+ $($(response).attr('user')).attr('address')+additionalInfo+'. having order status <b>'+$(response).attr('orderStatus')+'</b>.'+selectdd;
+			detailsmsg = detailsmsg + '<p>'+count +'.<input type="hidden" value="'+details+'" id="datadesc'+count+'" /> <input type="button" data-id='+$(response).attr('id')+'  class="btn btn-primary"  onClick="return viewOrderDetails(this,'+count+')" value="OrderDetails" /> OrderId <b>'+$(response).attr('orderid')+'</b> placed by <b>'+$($(response).attr('user')).attr('userName')+'</b> On <b>'+$(response).attr('datetime').substr(11)+'</b> with Total amount <b>'+ $(response).attr('finalPrice')+' Rs. Address Details :</b> '+ $($(response).attr('user')).attr('address')+additionalInfo+'. having order status <b>'+$(response).attr('orderStatus')+'</b>.'+selectdd;
 			str = str +  '<div class="col-sm-12"><div class="cart-wrap ftco-animate fadeInUp ftco-animated"><div class="cart-total mb-3"><h3>'+$(response).attr('datetime').substr(0,10)+'</h3><div id="detailssub">#runtime#</div></div></div></div>';
 		
 			lastDate = $(response).attr('datetime').substr(0,10);
 			
 		}else{
-			detailsmsg = detailsmsg + '<p>'+count +'.<input type="hidden" value="'+details+'" id="datadesc'+count+'" /> <input type="button" data-id='+$(response).attr('id')+'  class="btn btn-primary"  onClick="return viewOrderDetails(this,'+count+')" value="OrderDetails" /> OrderId <b>'+$(response).attr('orderid')+'</b> placed by <b>'+$($(response).attr('user')).attr('userName')+'</b> using Mobile No. <b>'+$($(response).attr('user')).attr('mobileNo')+'</b> with Total amount <b>'+ $(response).attr('finalPrice')+' Rs. Address Details :</b> '+ $($(response).attr('user')).attr('address')+additionalInfo+'. having order status <b>'+$(response).attr('orderStatus')+'</b>.'+selectdd;
+			detailsmsg = detailsmsg + '<p>'+count +'.<input type="hidden" value="'+details+'" id="datadesc'+count+'" /> <input type="button" data-id='+$(response).attr('id')+'  class="btn btn-primary"  onClick="return viewOrderDetails(this,'+count+')" value="OrderDetails" /> OrderId <b>'+$(response).attr('orderid')+'</b> placed by <b>'+$($(response).attr('user')).attr('userName')+'</b> On <b>'+$(response).attr('datetime').substr(11)+'</b> with Total amount <b>'+ $(response).attr('finalPrice')+' Rs. Address Details :</b> '+ $($(response).attr('user')).attr('address')+additionalInfo+'. having order status <b>'+$(response).attr('orderStatus')+'</b>.'+selectdd;
 				
 		}
 	
@@ -1510,5 +1518,6 @@ function prepareOrderHistoryList(response1){
 	str = str.replace("#runtime#",detailsmsg);
 	
 	$("#orderDetails").append(str);
+	$("#orderHistoryLogo").show();
 	
 }

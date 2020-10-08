@@ -58,8 +58,8 @@
 	      <div class="collapse navbar-collapse" id="ftco-nav">
 	        <ul class="navbar-nav ml-auto">
 	          <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
-	          <li class="nav-item active"><a href="ViewOrders.html" class="nav-link">View Orders</a></li>
-	          
+	          <li class="nav-item"><a href="ViewOrders.html" class="nav-link">View Order</a></li>
+			  <li class="nav-item"><a href="MyOrderHistory.html" class="nav-link activetoplinklabel">My Orders History</a></li>	          
 	        </ul>
 	      </div>
 	    </div>
@@ -69,20 +69,23 @@
 <div class="row">
 	<div class="col-lg-4 mt-5 cart-wrap ftco-animate">
 	 			<div class="cart-total mb-3">
-	 					<h3>View Order History</h3>
+	 					<h3 class="orderheaderlabel">MY ORDER HISTORY</h3>
 	 					<p>Enter your Mobile Number</p>
 						<p style="color:red" id="errorId"></p>
 						
 	            <div class="form-group">
 	              	<!-- <label for="">View Order details</label> -->
-	                <input id="mobileNo" type="number" class="form-control text-left px-3"  placeholder="" autofocus maxlength=10>
+	                <input id="mobileNo" type="number" class="form-control text-left px-3" maxlength=10>
 	            </div>
-	            <input type="button" value="View Order History"  onclick="return viewOrderHistory(this)" class="btn btn-primary py-3 px-5">
+	            <input type="button" value="View Order History" id="orderHistory" onclick="return viewOrderHistory(this)" class="btn btn-primary py-3 px-5">
 	            </div>
 	</div>
 </div>
 </div>
-	 <div class="container"> 
+	 <div class="container" id="orderHistoryLogo" style="display: none;"> 
+			<div class="row text-center"  style="display: block;width: 100%;">
+				<img src="img/OrderHistory.png" style="max-width:100%" />
+			</div>
 		<div class="row">
 				<div id="orderDetails"></div>
 		</div>
@@ -112,7 +115,7 @@
 			</div>
 		  </div>
 		  <div class="modal-footer">
-				<input type="button" class="btn btn-primary" id="cancelOrderButton" value="Confirm OTP" onClick="return verifyOTP(this)" />
+				<input type="button" class="btn btn-primary" id="verifyOTPbutton" value="Confirm OTP" onClick="return verifyOTP(this)" />
 				<input type="button" class="btn btn-primary" id="closeButton" value="Close" onClick="return closeMyOrderPopUp()" />
 		  </div>
 		</div>
@@ -149,11 +152,25 @@
   <script src="js/aos.js"></script>
   <script src="js/scrollax.min.js"></script>
   <script src="js/main.js"></script>
-<script id="myscriptLib" myCustomAttrib="common"  src="js/script-lib.js"></script>
-   <script type="text/javascript">
-	$("#mobileNo").focus();
+  <script id="myscriptLib" myCustomAttrib="common"  src="js/script-lib.js"></script>
+  <script type="text/javascript">
+	setTimeout(function(){
+		$("#mobileNo").focus();
+	}, 500);
 	
- </script>
-   
+	var input = document.getElementById("mobileNo");
+	input.addEventListener("keyup", function(event) {
+	  if (event.keyCode === 13) {
+		viewOrderHistory($("#orderHistory"));
+	  }
+	});
+	
+	var input1 = document.getElementById("OTPConfirmID");
+	input1.addEventListener("keyup", function(event) {
+	  if (event.keyCode === 13) {
+		verifyOTP($("#verifyOTPbutton"));
+	  }
+	});	
+ </script>   
   </body>
 </html>

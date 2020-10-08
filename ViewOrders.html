@@ -58,8 +58,8 @@
 	      <div class="collapse navbar-collapse" id="ftco-nav">
 	        <ul class="navbar-nav ml-auto">
 	          <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
-	          <li class="nav-item active"><a href="ViewOrders.html" class="nav-link">View Orders</a></li>
-	          
+	          <li class="nav-item active"><a href="ViewOrders.html" class="nav-link activetoplinklabel">View Orders</a></li>
+			  <li class="nav-item"><a href="MyOrderHistory.html" class="nav-link">My Orders History</a></li>	          
 	        </ul>
 	      </div>
 	    </div>
@@ -69,14 +69,16 @@
 <div class="row">
 	<div class="col-lg-4 mt-5 cart-wrap ftco-animate">
 	 			<div class="cart-total mb-3">
-	 					<h3>View Order details</h3>
+	 					<h3 class="orderheaderlabel">VIEW ORDER DETAILS</h3>
 	 					<p>Enter your Order Number</p>
-						
-	            <div class="form-group">
-	              	<!-- <label for="">View Order details</label> -->
-	                <input id="Orderid" type="number" class="form-control text-left px-3" onkeypress="return checkSpcialChar(event)"  placeholder="" maxlength=20>
-	            </div>
-	            <input type="submit" value="View Orders"  onclick="return submitViewOrder()" class="btn btn-primary py-3 px-5">
+						<p style="color:red" id="errorId"></p>
+					
+						<div class="form-group">
+							<!-- <label for="">View Order details</label> -->
+							<input id="Orderid" type="number" class="form-control text-left px-3"  placeholder="" maxlength=20>
+						</div>
+						<input type="submit" value="View Orders" id="viewOrderId" onclick="return submitViewOrder()" class="btn btn-primary py-3 px-5">
+					
 	            </div>
 	</div>
 </div>
@@ -217,13 +219,17 @@
 <script id="myscriptLib" myCustomAttrib="common"  src="js/script-lib.js"></script>
    <script type="text/javascript">
 	$("#ordersection").hide();
-	function checkSpcialChar(event){
-	   if(!((event.keyCode >= 64) && (event.keyCode <= 90) || (event.keyCode >= 32) && (event.keyCode <= 32) || (event.keyCode >= 95) && (event.keyCode <= 122) || (event.keyCode >= 44) && (event.keyCode <= 57))){
-          event.returnValue = false;
-          return;
-       }
-       event.returnValue = true;
-    }
+	
+	setTimeout(function(){
+    $("#Orderid").focus();
+	}, 500);
+	var input = document.getElementById("Orderid");
+	input.addEventListener("keyup", function(event) {
+	  if (event.keyCode === 13) {
+		submitViewOrder();
+	  }
+	});
+	
 	var orderid = window.location.search;
 	if(orderid != ''){
 		$("#Orderid").val(orderid.substr(1));
