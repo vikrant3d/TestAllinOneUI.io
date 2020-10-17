@@ -11,6 +11,12 @@ var masterMethod="get"+typeName+"MasterData";
 var minOrder
 cardCount();
 hidePlaySToreIconIfApp();
+checkHttpReq()
+function checkHttpReq(){	
+	if (location.protocol == 'http:'){
+	  location.href = location.href.replace("http","https");
+	}
+}
 function initMap(type){
 	$('#lodaingModal').modal('show');
 	alertPopUpAdd();
