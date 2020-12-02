@@ -16,14 +16,16 @@ function saveAspdf() {
 var pdf = new jsPDF('p','pt','a4');
 
 pdf.addHTML(document.body,function() {
-    pdf.save('web.pdf');
+var blob = pdf.output("blob");
+
+   window.open(URL.createObjectURL(blob));
 });
 }
 </script>
 
 
 <body>
-    <p id="to-pdf">Generating PDF</p>
+    <p id="to-pdf">Generating PDF 123</p>
 </body>
 
 </html>
