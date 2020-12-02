@@ -1,4 +1,4 @@
-code works for me 123:
+code works for me Test PDF:
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,16 +16,14 @@ function saveAspdf() {
 var pdf = new jsPDF('p','pt','a4');
 
 pdf.addHTML(document.body,function() {
-var blob = pdf.output("blob");
-
-   window.open(URL.createObjectURL(blob));
+    pdf.save('web.pdf');
 });
 }
 </script>
 
 
 <body>
-    <p id="to-pdf">Generating PDF 123</p>
+    <p id="to-pdf">Generating PDF</p>
 </body>
 
 </html>
